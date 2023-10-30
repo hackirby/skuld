@@ -19,12 +19,11 @@ func IsInStartupPath() bool {
 	}
 	exePath = filepath.Dir(exePath)
 
-
 	if exePath == "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Startup" {
 		return true
 	}
 
-	if exePath == os.Getenv("APPDATA") + "\\Microsoft\\Protect" {
+	if exePath == filepath.Join(os.Getenv("APPDATA"), "Microsoft", "Protect") {
 		return true
 	}
 

@@ -3,6 +3,7 @@ package browsers
 func GetChromiumBrowsers() map[string]string {
 	return map[string]string{
 		"Chromium":             "AppData\\Local\\Chromium\\User Data",
+		"Thorium":              "AppData\\Local\\Thorium\\User Data",
 		"Chrome":               "AppData\\Local\\Google\\Chrome\\User Data",
 		"Chrome (x86)":         "AppData\\Local\\Google(x86)\\Chrome\\User Data",
 		"Chrome SxS":           "AppData\\Local\\Google\\Chrome SxS\\User Data",
@@ -52,5 +53,6 @@ func GetGeckoBrowsers() map[string]string {
 		"Cyberfox":    "AppData\\Roaming\\8pecxstudios\\Cyberfox\\Profiles",
 		"BlackHaw":    "AppData\\Roaming\\NETGATE Technologies\\BlackHaw\\Profiles",
 		"Pale Moon":   "AppData\\Roaming\\Moonchild Productions\\Pale Moon\\Profiles",
+		"Mercury":     "AppData\\Roaming\\mercury\\Profiles",
 	}
 }

