@@ -161,10 +161,10 @@ func KillProcesses(blacklist []string) {
 
 			if !containsContains(blacklist, name) {
 				whitelist[pid] = true
+				continue
 			}
 
 			p.Kill()
-			continue
 		}
 	}
 }
