@@ -161,7 +161,7 @@ If you have any questions or need further assistance, please contact [@hackirby:
 ## Acknowledgments
 - [ᴍᴏᴏɴD4ʀᴋ](https://github.com/moonD4rk/HackBrowserData) for browsers data decryption
 - [addi00000](https://github.com/addi00000/empyrean) for Discord embeds design
-- [Blank-c](https://github.com/Blank-c/Blank-Grabber) for Windows Defender related functions
+- [Blank-c](https://github.com/Blank-c/Blank-Grabber) for antivirus related functions
 
 ## Disclaimer
 
