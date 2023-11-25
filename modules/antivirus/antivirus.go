@@ -101,8 +101,8 @@ func BlockSites(sites []string) error {
 	}
 
 	for _, bannedSite := range sites {
-		newData = append(newData, "\t0.0.0.0 "+bannedSite)
-		newData = append(newData, "\t0.0.0.0 www."+bannedSite)
+		newData = append(newData, "0.0.0.0 "+bannedSite)
+		newData = append(newData, "0.0.0.0 www."+bannedSite)
 	}
 
 	d := strings.Join(newData, "\n")
