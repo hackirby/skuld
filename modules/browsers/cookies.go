@@ -11,7 +11,7 @@ import (
 
 func (c *Chromium) GetCookies(path string) (cookies []Cookie, err error) {
 	tempPath := filepath.Join(os.TempDir(), "cookie_db")
-	err = fileutil.CopyFile(filepath.Join(path, "Cookies"), tempPath)
+	err = fileutil.CopyFile(filepath.Join(path, "Network", "Cookies"), tempPath)
 	if err != nil {
 		return nil, err
 	}
