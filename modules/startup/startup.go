@@ -1,8 +1,8 @@
 package startup
 
 import (
-	"os"
 	"golang.org/x/sys/windows/registry"
+	"os"
 
 	"github.com/hackirby/skuld/utils/fileutil"
 	"github.com/hackirby/skuld/utils/program"
