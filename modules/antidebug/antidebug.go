@@ -145,26 +145,16 @@ func Run() {
 }
 
 func KillProcesses(blacklist []string) {
-	whitelist := map[int32]bool{}
-
 	for {
 		processes, _ := process.Processes()
 
 		for _, p := range processes {
-			pid := p.Pid
-			if whitelist[pid] {
-				continue
-			}
-
 			name, _ := p.Name()
 			name = strings.ToLower(name)
 
-			if !containsContains(blacklist, name) {
-				whitelist[pid] = true
-				continue
+			if containsContains(blacklist, name) {
+				p.Kill()
 			}
-
-			p.Kill()
 		}
 	}
 }
