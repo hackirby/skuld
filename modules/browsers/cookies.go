@@ -1,22 +1,13 @@
 package browsers
 
 import (
-	"database/sql"
-	"os"
 	"path/filepath"
 
-	"github.com/hackirby/skuld/utils/fileutil"
 	_ "modernc.org/sqlite"
 )
 
 func (c *Chromium) GetCookies(path string) (cookies []Cookie, err error) {
-	tempPath := filepath.Join(os.TempDir(), "cookie_db")
-	err = fileutil.CopyFile(filepath.Join(path, "Network", "Cookies"), tempPath)
-	if err != nil {
-		return nil, err
-	}
-
-	db, err := sql.Open("sqlite", tempPath)
+	db, err := GetDBConnection(filepath.Join(path, "Network", "Cookies"))
 	if err != nil {
 		return nil, err
 	}
@@ -60,19 +51,10 @@ func (c *Chromium) GetCookies(path string) (cookies []Cookie, err error) {
 }
 
 func (g *Gecko) GetCookies(path string) (cookies []Cookie, err error) {
-	tempPath := filepath.Join(os.TempDir(), "cookie_db")
-	err = fileutil.CopyFile(filepath.Join(path, "cookies.sqlite"), tempPath)
+	db, err := GetDBConnection(filepath.Join(path, "cookies.sqlite"))
 	if err != nil {
 		return nil, err
 	}
-
-	db, err := sql.Open("sqlite", tempPath)
-	if err != nil {
-		return nil, err
-	}
-
-	defer os.Remove(tempPath)
-	defer db.Close()
 
 	rows, err := db.Query("SELECT name, value, host, path, expiry FROM moz_cookies")
 	if err != nil {

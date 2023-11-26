@@ -159,12 +159,11 @@ If you have any questions or need further assistance, please contact [@hackirby:
 ](https://matrix.to/#/@hackirby:matrix.org)
 
 ## Acknowledgments
+This project has been greatly influenced by numerous infostealers available on GitHub. Many functions and sensitive paths have been derived from public repositories. My objective was to innovate by creating something new with code from existing projects. I extend my gratitude to all those whose work has contributed to this stealer, especially
+- [FallenAstaroth](https://github.com/FallenAstaroth/stink) for tempfile-less browsers data extraction
 - [ᴍᴏᴏɴD4ʀᴋ](https://github.com/moonD4rk/HackBrowserData) for browsers data decryption
 - [addi00000](https://github.com/addi00000/empyrean) for Discord embeds design
 - [Blank-c](https://github.com/Blank-c/Blank-Grabber) for antivirus-related functions and more
-
-This project has been greatly influenced by numerous infostealers available on GitHub. Many functions and sensitive paths have been derived from public repositories. My objective was to innovate by creating something new with code from existing projects. I extend my gratitude to all those whose work has contributed to this stealer.
-
 ## Disclaimer
 
 ### Important Notice: This tool is intended for educational purposes only.

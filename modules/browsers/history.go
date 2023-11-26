@@ -1,28 +1,16 @@
 package browsers
 
 import (
-	"database/sql"
-	"os"
 	"path/filepath"
 
-	"github.com/hackirby/skuld/utils/fileutil"
 	_ "modernc.org/sqlite"
 )
 
 func (c *Chromium) GetHistory(path string) (history []History, err error) {
-	tempPath := filepath.Join(os.TempDir(), "history_db")
-	err = fileutil.CopyFile(filepath.Join(path, "History"), tempPath)
+	db, err := GetDBConnection(filepath.Join(path, "History"))
 	if err != nil {
 		return nil, err
 	}
-
-	db, err := sql.Open("sqlite", tempPath)
-	if err != nil {
-		return nil, err
-	}
-
-	defer os.Remove(tempPath)
-	defer db.Close()
 
 	rows, err := db.Query("SELECT url, title, visit_count, last_visit_time FROM urls")
 	if err != nil {
@@ -57,19 +45,10 @@ func (c *Chromium) GetHistory(path string) (history []History, err error) {
 }
 
 func (g *Gecko) GetHistory(path string) (history []History, err error) {
-	tempPath := filepath.Join(os.TempDir(), "history_db")
-	err = fileutil.CopyFile(filepath.Join(path, "places.sqlite"), tempPath)
+	db, err := GetDBConnection(filepath.Join(path, "places.sqlite"))
 	if err != nil {
 		return nil, err
 	}
-
-	db, err := sql.Open("sqlite", tempPath)
-	if err != nil {
-		return nil, err
-	}
-
-	defer os.Remove(tempPath)
-	defer db.Close()
 
 	rows, err := db.Query("SELECT url, title, visit_count, last_visit_date FROM moz_places")
 	if err != nil {

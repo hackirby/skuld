@@ -1,29 +1,17 @@
 package browsers
 
 import (
-	"database/sql"
-	"os"
 	"path/filepath"
 	"regexp"
 
-	"github.com/hackirby/skuld/utils/fileutil"
 	_ "modernc.org/sqlite"
 )
 
 func (c *Chromium) GetDownloads(path string) (downloads []Download, err error) {
-	tempPath := filepath.Join(os.TempDir(), "downloads_db")
-	err = fileutil.CopyFile(filepath.Join(path, "History"), tempPath)
+	db, err := GetDBConnection(filepath.Join(path, "History"))
 	if err != nil {
 		return nil, err
 	}
-
-	db, err := sql.Open("sqlite", tempPath)
-	if err != nil {
-		return nil, err
-	}
-
-	defer os.Remove(tempPath)
-	defer db.Close()
 
 	rows, err := db.Query("SELECT tab_url, target_path FROM downloads")
 	if err != nil {
@@ -55,21 +43,7 @@ func (c *Chromium) GetDownloads(path string) (downloads []Download, err error) {
 }
 
 func (g *Gecko) GetDownloads(path string) (downloads []Download, err error) {
-	tempPath := filepath.Join(os.TempDir(), "downloads_db")
-	err = fileutil.CopyFile(filepath.Join(path, "places.sqlite"), tempPath)
-	if err != nil {
-		return nil, err
-	}
-
-	db, err := sql.Open("sqlite", tempPath)
-	if err != nil {
-		return nil, err
-	}
-
-	defer os.Remove(tempPath)
-	defer db.Close()
-
-	_, err = db.Exec("PRAGMA journal_mode=off")
+	db, err := GetDBConnection(filepath.Join(path, "places.sqlite"))
 	if err != nil {
 		return nil, err
 	}
