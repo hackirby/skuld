@@ -97,7 +97,9 @@ func RegistryCheck() bool {
 }
 
 func GraphicsCardCheck() bool {
-	gpu, err := exec.Command("wmic", "path", "win32_VideoController", "get", "name").Output()
+	cmd := exec.Command("wmic", "path", "win32_VideoController", "get", "name")
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	gpu, err := cmd.Output()
 	if err != nil {
 		return false
 	}

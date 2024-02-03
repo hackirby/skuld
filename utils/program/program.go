@@ -36,5 +36,8 @@ func HideSelf() {
 		return
 	}
 
-	exec.Command("attrib", "+h", "+s", exe).Start()
+	cmd := exec.Command("attrib", "+h", "+s", exe)
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+
+	cmd.Run()
 }

