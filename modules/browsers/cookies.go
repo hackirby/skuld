@@ -20,15 +20,15 @@ func (c *Chromium) GetCookies(path string) (cookies []Cookie, err error) {
 
 	for rows.Next() {
 		var (
-			name, host, path       string
-			encrypted_value, value []byte
-			expires_utc            int64
+			name, host, path      string
+			encryptedValue, value []byte
+			expiresUtc            int64
 		)
-		if err = rows.Scan(&name, &encrypted_value, &host, &path, &expires_utc); err != nil {
+		if err = rows.Scan(&name, &encryptedValue, &host, &path, &expiresUtc); err != nil {
 			continue
 		}
 
-		if name == "" || host == "" || path == "" || encrypted_value == nil {
+		if name == "" || host == "" || path == "" || encryptedValue == nil {
 			continue
 		}
 
@@ -36,10 +36,10 @@ func (c *Chromium) GetCookies(path string) (cookies []Cookie, err error) {
 			Name:       name,
 			Host:       host,
 			Path:       path,
-			ExpireDate: expires_utc,
+			ExpireDate: expiresUtc,
 		}
 
-		value, err = c.Decrypt(encrypted_value)
+		value, err = c.Decrypt(encryptedValue)
 		if err != nil {
 			continue
 		}

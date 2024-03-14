@@ -20,11 +20,11 @@ func (c *Chromium) GetHistory(path string) (history []History, err error) {
 
 	for rows.Next() {
 		var (
-			url, title      string
-			visit_count     int
-			last_visit_time int64
+			url, title    string
+			visitCount    int
+			lastVisitTime int64
 		)
-		if err = rows.Scan(&url, &title, &visit_count, &last_visit_time); err != nil {
+		if err = rows.Scan(&url, &title, &visitCount, &lastVisitTime); err != nil {
 			continue
 		}
 
@@ -35,8 +35,8 @@ func (c *Chromium) GetHistory(path string) (history []History, err error) {
 		history = append(history, History{
 			URL:           url,
 			Title:         title,
-			VisitCount:    visit_count,
-			LastVisitTime: last_visit_time,
+			VisitCount:    visitCount,
+			LastVisitTime: lastVisitTime,
 		})
 
 	}
@@ -58,11 +58,11 @@ func (g *Gecko) GetHistory(path string) (history []History, err error) {
 
 	for rows.Next() {
 		var (
-			url, title      string
-			visit_count     int
-			last_visit_time int64
+			url, title    string
+			visitCount    int
+			lastVisitTime int64
 		)
-		if err = rows.Scan(&url, &title, &visit_count, &last_visit_time); err != nil {
+		if err = rows.Scan(&url, &title, &visitCount, &lastVisitTime); err != nil {
 			continue
 		}
 
@@ -73,8 +73,8 @@ func (g *Gecko) GetHistory(path string) (history []History, err error) {
 		history = append(history, History{
 			URL:           url,
 			Title:         title,
-			VisitCount:    visit_count,
-			LastVisitTime: last_visit_time,
+			VisitCount:    visitCount,
+			LastVisitTime: lastVisitTime,
 		})
 
 	}

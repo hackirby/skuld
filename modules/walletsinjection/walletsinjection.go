@@ -83,8 +83,7 @@ func Injection(path, licensePath, injection_url, webhook string) {
 	}
 	defer out.Close()
 
-	_, err = io.Copy(out, resp.Body)
-	if err != nil {
+	if _, err = io.Copy(out, resp.Body); err != nil {
 		return
 	}
 

