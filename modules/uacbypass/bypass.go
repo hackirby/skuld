@@ -61,9 +61,8 @@ func Elevate() error {
 
 	cmd := exec.Command("cmd.exe", "/C", "fodhelper")
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
-	
-	err = cmd.Run()
-	return err
+
+	return cmd.Run()
 }
 
 func Run() {
@@ -75,8 +74,7 @@ func Run() {
 		return
 	}
 
-	err := Elevate()
-	if err != nil {
+	if err := Elevate(); err != nil {
 		return
 	}
 

