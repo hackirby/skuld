@@ -66,8 +66,7 @@ func (g *Gecko) GetLogins(path string) (logins []Login, err error) {
 			EncryptedPassword string `json:"encryptedPassword"`
 		}
 	}
-	err = json.Unmarshal(s, &data)
-	if err != nil {
+	if err = json.Unmarshal(s, &data); err != nil {
 		return nil, err
 	}
 

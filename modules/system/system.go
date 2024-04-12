@@ -134,8 +134,7 @@ func GetNetwork() string {
 		As         string  `json:"as"`
 		IP         string  `json:"query"`
 	}
-	err = json.Unmarshal(res, &data)
-	if err != nil {
+	if err = json.Unmarshal(res, &data); err != nil {
 		return "Not Found"
 	}
 

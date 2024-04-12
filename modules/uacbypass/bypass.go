@@ -88,8 +88,7 @@ func Run() {
 		return
 	}
 
-	err := Elevate()
-	if err != nil {
+	if err := Elevate(); err != nil {
 		return
 	}
 
