@@ -6,9 +6,9 @@ require (
 	github.com/alexmullins/zip v0.0.0-20180717182244-4affb64b04d0
 	github.com/shirou/gopsutil/v3 v3.23.9
 	golang.design/x/clipboard v0.7.0
-	golang.org/x/crypto v0.14.0
-	golang.org/x/sys v0.13.0
-	golang.org/x/text v0.13.0
+	golang.org/x/crypto v0.17.0
+	golang.org/x/sys v0.15.0
+	golang.org/x/text v0.14.0
 	modernc.org/sqlite v1.26.0
 )
 
