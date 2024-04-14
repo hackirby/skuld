@@ -115,16 +115,17 @@ func Run() {
 	}
 
 	callback := getCallback([]string{
-		"simpleassemblyexplorer", "dojandqwklndoqwd", "centos", "process hacker 2",
-		"procmon64", "process hacker", "sae", "sharpod", "http debugger",
-		"dbgclr", "x32dbg", "sniffer", "petools", "simpleassembly", "ksdumper", "dnspy", "x96dbg",
-		"de4dot", "zed", "exeinfope", "windbg", "mdb", "harmony", "systemexplorerservice", "megadumper",
-		"system explorer", "mdbg", "kdb", "charles", "stringdecryptor", "phantom", "folder",
-		"debugger", "extremedumper", "pc-ret", "dbg", "dojandqwklndoqwd-x86", "folderchangesview", "james",
-		"process monitor", "protection_id", "de4dotmodded", "x32_dbg", "pizza", "fiddler", "checker",
-		"x64_dbg", "httpanalyzer", "strongod", "wireshark", "gdb", "graywolf", "x64dbg", "ksdumper v1.1 - by equifox",
-		"wpe pro", "ilspy", "dbx", "ollydbg", "x64netdumper", "scyllahide", "kgdb", "systemexplorer",
-		"proxifier", "debug", "httpdebug", "httpdebugger", "0harmony", "mitmproxy", "ida -",
+		"simpleassemblyexplorer", "dojandqwklndoqwd", "procmon64", "process hacker",
+		"sharpod", "http debugger", "dbgclr", "x32dbg", "sniffer", "petools",
+		"simpleassembly", "ksdumper", "dnspy", "x96dbg", "de4dot", "exeinfope",
+		"windbg", "mdb", "harmony", "systemexplorerservice", "megadumper",
+		"system explorer", "mdbg", "kdb", "charles", "stringdecryptor", "phantom",
+		"debugger", "extremedumper", "pc-ret", "folderchangesview", "james",
+		"process monitor", "protection_id", "de4dotmodded", "x32_dbg", "pizza", "fiddler",
+		"x64_dbg", "httpanalyzer", "strongod", "wireshark", "gdb", "graywolf", "x64dbg",
+		"ksdumper v1.1 - by equifox", "wpe pro", "ilspy", "dbx", "ollydbg", "x64netdumper",
+		"scyllahide", "kgdb", "systemexplorer", "proxifier", "debug", "httpdebug",
+		"httpdebugger", "0harmony", "mitmproxy", "ida -",
 		"codecracker", "ghidra", "titanhide", "hxd", "reversal",
 	})
 
