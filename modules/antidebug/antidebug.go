@@ -18,7 +18,7 @@ var (
 		ptp    = mk32.NewProc("TerminateProcess")
 		pch         = mk32.NewProc("CloseHandle")
 		pidp = mk32.NewProc("IsDebuggerPresent")
-	       // we exploit log console (olly and other debuggers)
+	    // we exploit log console (olly and other debuggers)
 		k32             = syscall.MustLoadDLL("kernel32.dll")
 		DebugStrgingA   = k32.MustFindProc("OutputDebugStringA")
 		gle         = k32.MustFindProc("GetLastError")
@@ -26,13 +26,16 @@ var (
 )
 
 func IsDebuggerPresent() {
-    flag, _, _ := pidp.Call()
+	flag, _, _ := pidp.Call()
     if flag != 0 {
         os.Exit(-1)
     }
 }
 
 func Run() {
+	IsDebuggerPresent()
+	for{
+
 	// for debuggers like x64dbg or any other
 	OutputDebugStringAntiDebug()
 	// this is for ollydbg 
@@ -46,7 +49,8 @@ func Run() {
 
 	KillProcesses(blacklist)
 }
-// btw this will most likely crash x64 dbg lol 
+}
+
 func OutputDebugStringAntiDebug() bool {
 	naughty := "hm"
 	txptr, _ := syscall.UTF16PtrFromString(naughty)
@@ -63,13 +67,6 @@ func OllyDbgExploit(text string) {
     DebugStrgingA.Call(uintptr(unsafe.Pointer(txptr)))
 }
 
-
-func main() {
-	IsDebuggerPresent()
-	for{
-		Run()
-	}
-}
 
 func ewpg(hwnd uintptr, lParam uintptr) uintptr {
 	// blacklisted window names
