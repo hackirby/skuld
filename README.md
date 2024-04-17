@@ -8,7 +8,7 @@
 <br>
 
 <p align="center">
-    <img src="./assets/avatar.png" width=100  >
+    <img src="./.github/assets/avatar.png" width=100  >
 </p>
 
 
@@ -103,7 +103,7 @@ You can use the Project template:
 
 - Open `main.go` and edit config with your Discord webhook and your crypto addresses
 
-![](assets/config.png)
+![](.github/assets/config.png)
 
 - Build the template: (You can reduce binary size by using `-s -w` and hide the console by using `-H=windowsgui` ldflags)
 
@@ -126,13 +126,13 @@ func main() {
 ```
 
 ## Preview
-![](assets/system.png)
-![](assets/browsers.png)
-![](assets/token.png)
-![](assets/discodes.png)
-![](assets/wallets.png)
-![](assets/games.png)
-![](assets/codes.png)
+![](.github/assets/system.png)
+![](.github/assets/browsers.png)
+![](.github/assets/token.png)
+![](.github/assets/discodes.png)
+![](.github/assets/wallets.png)
+![](.github/assets/games.png)
+![](.github/assets/codes.png)
 
 ## Roadmap
 - [x] Upload project
@@ -149,7 +149,7 @@ Contributions to this project are welcome! Feel free to open issues, submit pull
 
 You can also support this project development by leaving a star ⭐ or by donating me. Every little tip helps!
 
-<a href='https://ko-fi.com/hackirby'><img src='assets/kofi.png' width=150></a>
+<a href='https://ko-fi.com/hackirby'><img src='.github/assets/kofi.png' width=150></a>
 
 ## License
 This library is released under the MIT License. See LICENSE file for more informations.
