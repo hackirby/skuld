@@ -2,9 +2,12 @@ package program
 
 import (
 	"os"
+	"fmt"
 	"os/exec"
 	"path/filepath"
 	"syscall"
+
+	"golang.org/x/sys/windows"
 )
 
 func IsElevated() bool {
@@ -40,4 +43,11 @@ func HideSelf() {
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 
 	cmd.Run()
+}
+
+func IsAlreadyRunning() bool {
+	const AppID = "3575651c-bb47-448e-a514-22865732bbc"
+
+    _, err := windows.CreateMutex(nil, false, syscall.StringToUTF16Ptr(fmt.Sprintf("Global\\%s", AppID)))
+	return err != nil
 }
