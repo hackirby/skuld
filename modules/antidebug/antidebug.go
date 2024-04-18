@@ -1,6 +1,7 @@
 package antidebug
 
 import (
+	"fmt"
 	"os"
 	"strings"
 	"syscall"
@@ -15,17 +16,25 @@ var (
 	getWindowText   = user32DLL.NewProc("GetWindowTextA")
 	getWindowThread = user32DLL.NewProc("GetWindowThreadProcessId")
 
-	kernel32DLL = syscall.NewLazyDLL("kernel32.dll")
-	isDebugger  = kernel32DLL.NewProc("IsDebuggerPresent")
-	debugString = kernel32DLL.NewProc("OutputDebugStringA")
+	kernel32DLL          = syscall.NewLazyDLL("kernel32.dll")
+	isDebugger           = kernel32DLL.NewProc("IsDebuggerPresent")
+	debugString          = kernel32DLL.NewProc("OutputDebugStringA")
+	procOpenProcess      = kernel32DLL.NewProc("OpenProcess")
+	procTerminateProcess = kernel32DLL.NewProc("TerminateProcess")
 )
 
-func killProcess(pid int32) error {
-	process, err := os.FindProcess(int(pid))
-	if err != nil {
-		return err
+func terminateProcess(pid uint32) error {
+	handle, _, _ := procOpenProcess.Call(syscall.PROCESS_TERMINATE, 0, uintptr(pid))
+	if handle == 0 {
+		return fmt.Errorf("failed to open process")
 	}
-	return process.Kill()
+	defer syscall.CloseHandle(syscall.Handle(handle))
+
+	ret, _, _ := procTerminateProcess.Call(handle, 0)
+	if ret == 0 {
+		return fmt.Errorf("failed to terminate process")
+	}
+	return nil
 }
 
 func KillProcessesByNames(blacklist []string) error {
@@ -35,7 +44,7 @@ func KillProcessesByNames(blacklist []string) error {
 		processName, _ := p.Name()
 
 		if contains(blacklist, processName) {
-			killProcess(p.Pid)
+			terminateProcess(uint32(p.Pid))
 		}
 	}
 
@@ -58,7 +67,7 @@ func getCallback(blacklist []string) uintptr {
 			var pid uint32
 			getWindowThread.Call(uintptr(hwnd), uintptr(unsafe.Pointer(&pid)))
 
-			killProcess(int32(pid))
+			terminateProcess(pid)
 
 		}
 		return 1
