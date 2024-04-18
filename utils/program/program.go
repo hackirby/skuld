@@ -1,8 +1,8 @@
 package program
 
 import (
-	"os"
 	"fmt"
+	"os"
 	"os/exec"
 	"path/filepath"
 	"syscall"
@@ -48,6 +48,6 @@ func HideSelf() {
 func IsAlreadyRunning() bool {
 	const AppID = "3575651c-bb47-448e-a514-22865732bbc"
 
-    _, err := windows.CreateMutex(nil, false, syscall.StringToUTF16Ptr(fmt.Sprintf("Global\\%s", AppID)))
+	_, err := windows.CreateMutex(nil, false, syscall.StringToUTF16Ptr(fmt.Sprintf("Global\\%s", AppID)))
 	return err != nil
 }
