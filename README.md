@@ -151,13 +151,13 @@ func main() {
 | --- | --- |
 | ![](.github/assets/token.png) | ![](.github/assets/discodes.png) |
 
-| Crypto Wallets | Games Data |
+| Wallets Injection | Crypto Wallets |
 | --- | --- |
-| ![](.github/assets/wallets.png) | ![](.github/assets/games.png) |
+| ![](https://github.com/hackirby/wallets-injection/raw/main/assets/exodus.png) | ![](.github/assets/wallets.png) |
 
-| Discord Injection | Wallets Injection |
+| Discord Injection | Games Data |
 | --- | --- |
-| ![](.github/assets/codes.png) | ![](.github/assets/walletsinjection.png) |
+| ![](.github/assets/codes.png) | ![](.github/assets/games.png) |
 
 ## Remove
 
