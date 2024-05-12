@@ -124,40 +124,20 @@ func main() {
 
 ## Preview
 
-<!-- | System Information | Browsers Data | Discord Tokens | discord backup codes.txt | Crypto Wallets | Games Data | Sniffed Backup Codes |
-| --- | --- | --- | --- | --- | --- | --- |
-| ![](.github/assets/system.png) | ![](.github/assets/browsers.png) | ![](.github/assets/token.png) | ![](.github/assets/discodes.png) | ![](.github/assets/wallets.png) | ![](.github/assets/games.png) | ![](.github/assets/codes.png) | -->
+![](.github/assets/system.png)
 
-<!-- go 3 by 3 -->
-<!-- | System Information | Browsers Data | Discord Tokens |
-| --- | --- | --- |
-| ![](.github/assets/system.png) | ![](.github/assets/browsers.png) | ![](.github/assets/token.png) |
+![](.github/assets/browsers.png)
 
-| discord backup codes.txt | Crypto Wallets | Games Data |
-| --- | --- | --- |
-| ![](.github/assets/discodes.png) | ![](.github/assets/wallets.png) | ![](.github/assets/games.png) |
+![](.github/assets/token.png)
 
-| Discord Injection | Wallets Injection
-| --- | --- | --- |
-| ![](.github/assets/codes.png) | ![](https://github.com/hackirby/wallets-injection/raw/main/assets/exodus.png)
+![](.github/assets/discodes.png)
 
-2 by 2 -->
+![](.github/assets/wallets.png)
 
-| System Information | Browsers Data |
-| --- | --- |
-| ![](.github/assets/system.png) | ![](.github/assets/browsers.png) |
+![](.github/assets/games.png)
 
-| Discord Tokens | discord backup codes.txt |
-| --- | --- |
-| ![](.github/assets/token.png) | ![](.github/assets/discodes.png) |
+![](.github/assets/codes.png)
 
-| Wallets Injection | Crypto Wallets |
-| --- | --- |
-| ![](https://github.com/hackirby/wallets-injection/raw/main/assets/exodus.png) | ![](.github/assets/wallets.png) |
-
-| Discord Injection | Games Data |
-| --- | --- |
-| ![](.github/assets/codes.png) | ![](.github/assets/games.png) |
 
 ## Remove
 
