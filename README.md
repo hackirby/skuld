@@ -104,9 +104,6 @@ You can use the Project template:
 
 - Open `main.go` and edit config with your Discord webhook and your crypto addresses
 
-
-<img src=".github/assets/config.png">
-
 - Build the template: (reduce binary size by using `-s -w` and hide the console by using `-H=windowsgui` ldflags)
 
 ```bash
@@ -127,9 +124,40 @@ func main() {
 
 ## Preview
 
-| System Information | Browsers Data | Discord Tokens | discord backup codes.txt | Crypto Wallets | Games Data | Sniffed Backup Codes |
+<!-- | System Information | Browsers Data | Discord Tokens | discord backup codes.txt | Crypto Wallets | Games Data | Sniffed Backup Codes |
 | --- | --- | --- | --- | --- | --- | --- |
-| ![](.github/assets/system.png) | ![](.github/assets/browsers.png) | ![](.github/assets/token.png) | ![](.github/assets/discodes.png) | ![](.github/assets/wallets.png) | ![](.github/assets/games.png) | ![](.github/assets/codes.png) |
+| ![](.github/assets/system.png) | ![](.github/assets/browsers.png) | ![](.github/assets/token.png) | ![](.github/assets/discodes.png) | ![](.github/assets/wallets.png) | ![](.github/assets/games.png) | ![](.github/assets/codes.png) | -->
+
+<!-- go 3 by 3 -->
+<!-- | System Information | Browsers Data | Discord Tokens |
+| --- | --- | --- |
+| ![](.github/assets/system.png) | ![](.github/assets/browsers.png) | ![](.github/assets/token.png) |
+
+| discord backup codes.txt | Crypto Wallets | Games Data |
+| --- | --- | --- |
+| ![](.github/assets/discodes.png) | ![](.github/assets/wallets.png) | ![](.github/assets/games.png) |
+
+| Discord Injection | Wallets Injection
+| --- | --- | --- |
+| ![](.github/assets/codes.png) | ![](https://github.com/hackirby/wallets-injection/raw/main/assets/exodus.png)
+
+2 by 2 -->
+
+| System Information | Browsers Data |
+| --- | --- |
+| ![](.github/assets/system.png) | ![](.github/assets/browsers.png) |
+
+| Discord Tokens | discord backup codes.txt |
+| --- | --- |
+| ![](.github/assets/token.png) | ![](.github/assets/discodes.png) |
+
+| Crypto Wallets | Games Data |
+| --- | --- |
+| ![](.github/assets/wallets.png) | ![](.github/assets/games.png) |
+
+| Discord Injection | Wallets Injection |
+| --- | --- |
+| ![](.github/assets/codes.png) | ![](.github/assets/walletsinjection.png) |
 
 ## Remove
 
@@ -177,6 +205,8 @@ This project has been greatly influenced by numerous infostealers available on G
 - [ᴍᴏᴏɴD4ʀᴋ](https://github.com/moonD4rk/HackBrowserData) for browsers data decryption
 - [addi00000](https://github.com/addi00000/empyrean) for Discord embeds design
 - [Blank-c](https://github.com/Blank-c/Blank-Grabber) for antivirus-related functions and more
+- [6nz](https://github.com/6nz/virustotal-vm-blacklist) for antivm blacklists
+
 ## Disclaimer
 
 ### Important Notice: This tool is intended for educational purposes only.
