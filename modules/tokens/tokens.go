@@ -412,7 +412,7 @@ func GetHQFriends(friends []Friend) (hqFriends string) {
 
 func GetHQGuilds(guilds []Guild, token string) (hqGuilds string) {
 	for _, guild := range guilds {
-		if guild.Permissions != "562949953421311" {
+		if guild.Permissions != "562949953421311" && guild.Permissions != "2251799813685247" {
 			continue
 		}
 		if hqGuilds == "" {
