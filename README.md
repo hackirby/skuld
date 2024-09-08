@@ -110,7 +110,11 @@ You can use the Project template:
 go build -ldflags "-s -w"
 ```
 
-(You can hide the console without `hideconsole` module by using `go build -ldflags "-s -w -H=windowsgui"`, but you must remove `program.IsAlreadyRunning()` check from `main.go` before)
+- You can hide the console without `hideconsole` module (you must remove `program.IsAlreadyRunning()` check from `main.go` before) by running
+
+```bash
+go build -ldflags "-s -w -H=windowsgui"
+```
 
 - You can also optionally pack the output executable with UPX which will reduce the binary size from ~10MB to ~3MB. To do this, install [UPX](https://github.com/upx/upx/releases/) and run
 
