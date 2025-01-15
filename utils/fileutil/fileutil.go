@@ -12,16 +12,40 @@ import (
 	"github.com/alexmullins/zip"
 )
 
-func AppendFile(path string, line string) {
-	file, _ := os.OpenFile(path, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0644)
+const (
+	// DefaultFileMode is the default permission for created files
+	DefaultFileMode = 0644
+	// MaxTreeSize is the maximum size of the tree string before truncation
+	MaxTreeSize = 4090
+	// TreeTruncatedMessage is displayed when the tree is too large
+	TreeTruncatedMessage = "Too many files to display"
+)
+
+// AppendFile appends a line to a file, creating it if it doesn't exist
+// Returns error if the operation fails
+func AppendFile(path string, line string) error {
+	file, err := os.OpenFile(path, os.O_WRONLY|os.O_APPEND|os.O_CREATE, DefaultFileMode)
+	if err != nil {
+		return fmt.Errorf("failed to open file for append: %w", err)
+	}
 	defer file.Close()
-	file.WriteString(line + "\n")
+	
+	if _, err := file.WriteString(line + "\n"); err != nil {
+		return fmt.Errorf("failed to write to file: %w", err)
+	}
+	return nil
 }
 
+// Tree generates a tree-like string representation of a directory structure
+// prefix is used for indentation, isFirstDir is used for the root directory
 func Tree(path string, prefix string, isFirstDir ...bool) string {
 	var sb strings.Builder
 
-	files, _ := ioutil.ReadDir(path)
+	files, err := ioutil.ReadDir(path)
+	if err != nil {
+		return ""
+	}
+
 	for i, file := range files {
 		isLast := i == len(files)-1
 		var pointer string
@@ -46,16 +70,18 @@ func Tree(path string, prefix string, isFirstDir ...bool) string {
 	}
 
 	tree := sb.String()
-	if len(tree) > 4090 {
-		tree = "Too many files to display"
+	if len(tree) > MaxTreeSize {
+		tree = TreeTruncatedMessage
 	}
 	return tree
 }
 
+// Zip compresses a directory into a zip file
+// Returns error if any operation fails during compression
 func Zip(dirPath string, zipName string) error {
 	zipFile, err := os.Create(zipName)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to create zip file: %w", err)
 	}
 	defer zipFile.Close()
 
@@ -64,7 +90,7 @@ func Zip(dirPath string, zipName string) error {
 
 	err = filepath.Walk(dirPath, func(filePath string, info os.FileInfo, err error) error {
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to access path %q: %w", filePath, err)
 		}
 
 		if info.IsDir() {
@@ -73,39 +99,37 @@ func Zip(dirPath string, zipName string) error {
 
 		relPath, err := filepath.Rel(dirPath, filePath)
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to get relative path: %w", err)
 		}
 
 		zipEntry, err := zipWriter.Create(relPath)
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to create zip entry: %w", err)
 		}
 
 		file, err := os.Open(filePath)
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to open file %q: %w", filePath, err)
 		}
 		defer file.Close()
 
 		_, err = io.Copy(zipEntry, file)
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to write file to zip: %w", err)
 		}
 
 		return nil
 	})
 
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }
 
+// ZipWithPassword compresses a directory into a password-protected zip file
+// Returns error if any operation fails during compression
 func ZipWithPassword(dirPath string, zipName string, password string) error {
 	zipFile, err := os.Create(zipName)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to create zip file: %w", err)
 	}
 	defer zipFile.Close()
 
@@ -114,7 +138,7 @@ func ZipWithPassword(dirPath string, zipName string, password string) error {
 
 	err = filepath.Walk(dirPath, func(filePath string, info os.FileInfo, err error) error {
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to access path %q: %w", filePath, err)
 		}
 
 		if info.IsDir() {
@@ -123,117 +147,96 @@ func ZipWithPassword(dirPath string, zipName string, password string) error {
 
 		relPath, err := filepath.Rel(dirPath, filePath)
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to get relative path: %w", err)
 		}
 
-		zipEntry, err := zipWriter.Encrypt(relPath, password)
+		header := &zip.FileHeader{
+			Name:     relPath,
+			Method:   zip.Deflate,
+			Modified: info.ModTime(),
+		}
+		header.SetPassword(password)
+
+		zipEntry, err := zipWriter.CreateHeader(header)
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to create zip entry: %w", err)
 		}
 
 		file, err := os.Open(filePath)
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to open file %q: %w", filePath, err)
 		}
 		defer file.Close()
 
 		_, err = io.Copy(zipEntry, file)
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to write file to zip: %w", err)
 		}
 
 		return nil
 	})
 
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }
 
-func Copy(src, dst string) (err error) {
-	file, err := os.Stat(src)
+// Copy copies a file or directory to a destination
+// Returns error if the operation fails
+func Copy(src, dst string) error {
+	srcInfo, err := os.Stat(src)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to stat source: %w", err)
 	}
 
-	if file.IsDir() {
-		err = CopyDir(src, dst)
-	} else {
-		err = CopyFile(src, dst)
+	if srcInfo.IsDir() {
+		return CopyDir(src, dst)
 	}
-
-	return
+	return CopyFile(src, dst)
 }
 
-func CopyFile(src, dst string) (err error) {
-	in, err := os.Open(src)
+// CopyFile copies a single file from src to dst
+// Returns error if the operation fails
+func CopyFile(src, dst string) error {
+	srcFile, err := os.Open(src)
 	if err != nil {
-		return
+		return fmt.Errorf("failed to open source file: %w", err)
 	}
-	defer in.Close()
+	defer srcFile.Close()
 
-	out, err := os.Create(dst)
+	dstFile, err := os.Create(dst)
 	if err != nil {
-		return
+		return fmt.Errorf("failed to create destination file: %w", err)
 	}
-	defer func() {
-		if e := out.Close(); e != nil {
-			err = e
-		}
-	}()
+	defer dstFile.Close()
 
-	_, err = io.Copy(out, in)
+	_, err = io.Copy(dstFile, srcFile)
 	if err != nil {
-		return
+		return fmt.Errorf("failed to copy file contents: %w", err)
 	}
 
-	err = out.Sync()
+	srcInfo, err := os.Stat(src)
 	if err != nil {
-		return
+		return fmt.Errorf("failed to stat source file: %w", err)
 	}
 
-	si, err := os.Stat(src)
-	if err != nil {
-		return
-	}
-	err = os.Chmod(dst, si.Mode())
-	if err != nil {
-		return
-	}
-
-	return
+	return os.Chmod(dst, srcInfo.Mode())
 }
 
-func CopyDir(src string, dst string) (err error) {
-	src = filepath.Clean(src)
-	dst = filepath.Clean(dst)
-
-	si, err := os.Stat(src)
+// CopyDir recursively copies a directory tree from src to dst
+// Returns error if the operation fails
+func CopyDir(src string, dst string) error {
+	srcInfo, err := os.Stat(src)
 	if err != nil {
-		return err
-	}
-	if !si.IsDir() {
-		return fmt.Errorf("source is not a directory")
+		return fmt.Errorf("failed to stat source directory: %w", err)
 	}
 
-	_, err = os.Stat(dst)
-	if err != nil && !os.IsNotExist(err) {
-		return
-	}
-	if err == nil {
-		os.RemoveAll(dst)
-	}
-
-	err = os.MkdirAll(dst, si.Mode())
+	err = os.MkdirAll(dst, srcInfo.Mode())
 	if err != nil {
-		return
+		return fmt.Errorf("failed to create destination directory: %w", err)
 	}
 
 	entries, err := ioutil.ReadDir(src)
 	if err != nil {
-		return
+		return fmt.Errorf("failed to read source directory: %w", err)
 	}
 
 	for _, entry := range entries {
@@ -243,65 +246,64 @@ func CopyDir(src string, dst string) (err error) {
 		if entry.IsDir() {
 			err = CopyDir(srcPath, dstPath)
 			if err != nil {
-				return
+				return err
 			}
 		} else {
-			if entry.Mode()&os.ModeSymlink != 0 {
-				continue
-			}
-
 			err = CopyFile(srcPath, dstPath)
 			if err != nil {
-				return
+				return err
 			}
 		}
 	}
 
-	return
+	return nil
 }
 
+// IsDir checks if a path is a directory
+// Returns true if the path exists and is a directory
 func IsDir(path string) bool {
-	fileInfo, err := os.Stat(path)
+	info, err := os.Stat(path)
 	if err != nil {
 		return false
 	}
-	return fileInfo.IsDir()
+	return info.IsDir()
 }
 
+// Exists checks if a path exists
+// Returns true if the path exists
 func Exists(path string) bool {
 	_, err := os.Stat(path)
-	return !os.IsNotExist(err)
+	return err == nil
 }
 
+// ReadFile reads the entire contents of a file
+// Returns the contents as a string and any error encountered
 func ReadFile(path string) (string, error) {
-	bytes, err := os.ReadFile(path)
+	content, err := ioutil.ReadFile(path)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to read file: %w", err)
 	}
-	return string(bytes), nil
+	return string(content), nil
 }
 
+// ReadLines reads a file line by line
+// Returns a slice of strings containing each line and any error encountered
 func ReadLines(path string) ([]string, error) {
-	f, err := os.Open(path)
+	file, err := os.Open(path)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to open file: %w", err)
 	}
-	defer f.Close()
+	defer file.Close()
 
-	result := make([]string, 0)
-	buf := bufio.NewReader(f)
-
-	for {
-		line, _, err := buf.ReadLine()
-		l := string(line)
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			continue
-		}
-		result = append(result, l)
+	var lines []string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
 	}
 
-	return result, nil
+	if err := scanner.Err(); err != nil {
+		return nil, fmt.Errorf("failed to scan file: %w", err)
+	}
+
+	return lines, nil
 }

